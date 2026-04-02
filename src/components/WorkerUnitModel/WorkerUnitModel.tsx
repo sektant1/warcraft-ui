@@ -6,7 +6,7 @@ import {
   parseMDX,
 } from "war3-model";
 import { mat3, mat4, quat, vec3 } from "gl-matrix";
-import type { Race } from "../lib/types";
+import type { Race } from "../../types";
 
 type ModelType = ReturnType<typeof parseMDX>;
 type WorkerSide = "left" | "right";
