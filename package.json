@@ -1,15 +1,15 @@
 {
-  "name": "wc3-tools",
+  "name": "warcraft-ui",
   "private": false,
   "version": "0.0.0",
   "type": "module",
-  "main": "./dist/wc3-tools.js",
-  "module": "./dist/wc3-tools.js",
-  "types": "./dist/wc3-tools.d.ts",
+  "main": "./dist/warcraft-ui.js",
+  "module": "./dist/warcraft-ui.js",
+  "types": "./dist/warcraft-ui.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/wc3-tools.js",
-      "types": "./dist/wc3-tools.d.ts"
+      "import": "./dist/warcraft-ui.js",
+      "types": "./dist/warcraft-ui.d.ts"
     }
   },
   "files": [
