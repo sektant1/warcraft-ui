@@ -1,19 +1,34 @@
 {
   "name": "wc3-tools",
-  "private": true,
+  "private": false,
   "version": "0.0.0",
   "type": "module",
+  "main": "./dist/wc3-tools.js",
+  "module": "./dist/wc3-tools.js",
+  "types": "./dist/wc3-tools.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/wc3-tools.js",
+      "types": "./dist/wc3-tools.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build --config vite.lib.config.ts",
+    "build:demo": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview --outDir dist-demo"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
   },
   "dependencies": {
-    "war3-model": "^4.0.0",
     "gl-matrix": "^3.4.3",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4"
+    "war3-model": "^4.0.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.4",
@@ -25,8 +40,11 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.57.0",
-    "vite": "^8.0.1"
+    "vite": "^8.0.1",
+    "vite-plugin-dts": "^4.5.4"
   }
 }

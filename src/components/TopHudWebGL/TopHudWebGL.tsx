@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import type { Race } from "../../types";
+import type { Race } from "../../utils/types";
 import { RACE_PREFIXES } from "../../state/race";
 
 interface Props {

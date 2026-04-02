@@ -1,4 +1,4 @@
-import type { Race, TextureEntry } from "../types";
+import type { Race, TextureEntry } from "../utils/types";
 import { GLContext } from "./GLContext";
 import { TextureManager } from "./TextureManager";
 import { QuadBatcher } from "./QuadBatcher";

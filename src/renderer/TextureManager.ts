@@ -1,4 +1,5 @@
-import type { TextureEntry } from '../types';
+import type { TextureEntry } from "../utils/types";
+import { resolveAssetPath } from "../utils/config";
 
 export class TextureManager {
   private cache = new Map<string, TextureEntry>();
@@ -9,8 +10,17 @@ export class TextureManager {
     this.gl = gl;
     this.whiteTex = gl.createTexture()!;
     gl.bindTexture(gl.TEXTURE_2D, this.whiteTex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-      new Uint8Array([255, 255, 255, 255]));
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      1,
+      1,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      new Uint8Array([255, 255, 255, 255]),
+    );
   }
 
   load(path: string): TextureEntry {
@@ -18,8 +28,17 @@ export class TextureManager {
     const gl = this.gl;
     const tex = gl.createTexture()!;
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-      new Uint8Array([255, 255, 255, 255]));
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      1,
+      1,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      new Uint8Array([255, 255, 255, 255]),
+    );
     const entry: TextureEntry = { tex, width: 1, height: 1, loaded: false };
     this.cache.set(path, entry);
     const img = new Image();
@@ -34,18 +53,27 @@ export class TextureManager {
       entry.height = img.height;
       entry.loaded = true;
     };
-    img.src = import.meta.env.BASE_URL + path;
+    img.src = resolveAssetPath(path);
     return entry;
   }
 
   loadRepeat(path: string): TextureEntry {
-    const key = path + '?repeat';
+    const key = path + "?repeat";
     if (this.cache.has(key)) return this.cache.get(key)!;
     const gl = this.gl;
     const tex = gl.createTexture()!;
     gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, 1, 1, 0, gl.RGBA, gl.UNSIGNED_BYTE,
-      new Uint8Array([255, 255, 255, 255]));
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      1,
+      1,
+      0,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      new Uint8Array([255, 255, 255, 255]),
+    );
     const entry: TextureEntry = { tex, width: 1, height: 1, loaded: false };
     this.cache.set(key, entry);
     const img = new Image();
@@ -60,7 +88,7 @@ export class TextureManager {
       entry.height = img.height;
       entry.loaded = true;
     };
-    img.src = import.meta.env.BASE_URL + path;
+    img.src = resolveAssetPath(path);
     return entry;
   }
 
@@ -70,6 +98,6 @@ export class TextureManager {
   }
 
   preload(paths: string[]) {
-    paths.forEach(p => this.load(p));
+    paths.forEach((p) => this.load(p));
   }
 }

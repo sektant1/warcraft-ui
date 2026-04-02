@@ -1,11 +1,10 @@
 import { defineConfig } from "vite";
-import { resolve } from "path";
 import react from "@vitejs/plugin-react";
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "/wc3-tools/",
+  base: "/warcraft-ui/",
   server: {
     port: 3000,
     proxy: {
@@ -14,10 +13,6 @@ export default defineConfig({
   },
   build: {
     target: ["esnext"],
-    copyPublicDir: false,
-    lib: {
-      entry: resolve(__dirname, "lib/main.ts"),
-      formats: ["es"],
-    },
+    outDir: "dist-demo",
   },
 });

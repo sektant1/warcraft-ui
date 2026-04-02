@@ -1,4 +1,4 @@
-import type { Race, TextureEntry } from "../types";
+import type { Race, TextureEntry } from "../utils/types";
 import { RACE_PREFIXES, RACES } from "../state/race";
 import type { TextureManager } from "./TextureManager";
 

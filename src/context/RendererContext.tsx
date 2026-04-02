@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Renderer } from "../renderer/Renderer";
-import type { Race } from "../types";
+import type { Race } from "../utils/types";
 
 const RendererContext = createContext<Renderer | null>(null);
 

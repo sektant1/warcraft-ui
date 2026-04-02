@@ -1,5 +1,5 @@
 import { createExternalStore } from "./createStore";
-import type { Race, RacePrefix } from "../types";
+import type { Race, RacePrefix } from "../utils/types";
 
 export const RACES: Race[] = ["Human", "Orc", "NightElf", "Undead"];
 

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { decodeBLP, getBLPImageData } from "war3-model";
+import { resolveAssetPath } from "../utils/config";
 
 const iconDataUrlCache = new Map<string, Promise<string>>();
 const decodedImageCache = new Map<string, Promise<HTMLImageElement>>();
@@ -21,7 +22,7 @@ export async function loadBlpDataUrl(path: string): Promise<string> {
   if (cached) return cached;
 
   const promise = (async () => {
-    const res = await fetch(path);
+    const res = await fetch(resolveAssetPath(path));
     if (!res.ok) throw new Error(`Failed to fetch icon ${path}`);
     const ab = await res.arrayBuffer();
     const blp = decodeBLP(ab);
@@ -119,7 +120,17 @@ function drawHorizontallyTiledEdge(
   while (drawn < width) {
     const segmentW = Math.min(height, width - drawn);
     const srcW = (segmentW / height) * tile.width;
-    ctx.drawImage(tile, 0, 0, srcW, tile.height, x + drawn, y, segmentW, height);
+    ctx.drawImage(
+      tile,
+      0,
+      0,
+      srcW,
+      tile.height,
+      x + drawn,
+      y,
+      segmentW,
+      height,
+    );
     drawn += segmentW;
   }
 }
@@ -182,7 +193,17 @@ export function drawTemplateNineSliceToCanvas(
       ctx.fillRect(innerX, innerY, innerW, innerH);
     }
     if (options.tileBackground === false) {
-      ctx.drawImage(bgImg, 0, 0, bgImg.width, bgImg.height, innerX, innerY, innerW, innerH);
+      ctx.drawImage(
+        bgImg,
+        0,
+        0,
+        bgImg.width,
+        bgImg.height,
+        innerX,
+        innerY,
+        innerW,
+        innerH,
+      );
     } else {
       const pattern = ctx.createPattern(bgImg, "repeat");
       if (pattern) {
@@ -193,7 +214,13 @@ export function drawTemplateNineSliceToCanvas(
     ctx.restore();
   }
 
-  const drawCell = (idx: number, x: number, y: number, w: number, h: number) => {
+  const drawCell = (
+    idx: number,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+  ) => {
     ctx.drawImage(borderImg, idx * cellW, 0, cellW, atlasH, x, y, w, h);
   };
 
@@ -214,7 +241,14 @@ export function drawTemplateNineSliceToCanvas(
     const bottomRot = rotateCellClockwise(borderImg, 3, cellW, atlasH);
     if (options.tileHorizontalEdges) {
       drawHorizontallyTiledEdge(ctx, topRot, corner, 0, edgeW, corner);
-      drawHorizontallyTiledEdge(ctx, bottomRot, corner, cssH - corner, edgeW, corner);
+      drawHorizontallyTiledEdge(
+        ctx,
+        bottomRot,
+        corner,
+        cssH - corner,
+        edgeW,
+        corner,
+      );
     } else {
       ctx.drawImage(topRot, corner, 0, edgeW, corner);
       ctx.drawImage(bottomRot, corner, cssH - corner, edgeW, corner);
@@ -367,7 +401,11 @@ export function useNineSliceButton(urls: NineSliceUrls, disabled?: boolean) {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    const activeBg = disabled ? urls.bgDisabled : pressed ? urls.bgDown : urls.bg;
+    const activeBg = disabled
+      ? urls.bgDisabled
+      : pressed
+        ? urls.bgDown
+        : urls.bg;
     const activeBorder = disabled
       ? urls.borderDisabled
       : pressed
@@ -386,7 +424,13 @@ export function useNineSliceButton(urls: NineSliceUrls, disabled?: boolean) {
     ])
       .then(([bgImg, borderImg, hoverImg]) => {
         if (cancelled) return;
-        drawGlueNineSliceToCanvas(canvas, bgImg, borderImg, hoverImg, hoverActive);
+        drawGlueNineSliceToCanvas(
+          canvas,
+          bgImg,
+          borderImg,
+          hoverImg,
+          hoverActive,
+        );
       })
       .catch((err) => console.error(err));
 
