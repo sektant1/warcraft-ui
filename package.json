@@ -1,11 +1,11 @@
 {
-  "name": "@sektant1/warcraft3-ui",
+  "name": "@sektant1/warcraft-ui",
   "version": "0.1.2",
   "type": "module",
-  "main": "./dist/warcraft3-ui.umd.js",
-  "module": "./dist/warcraft3-ui.es.js",
+  "main": "./dist/warcraft-ui.umd.js",
+  "module": "./dist/warcraft-ui.es.js",
   "types": "./dist/main.d.ts",
-  "style": "./dist/assets/warcraft3-ui.css",
+  "style": "./dist/assets/warcraft-ui.css",
   "directories": {
     "lib": "lib"
   },
@@ -15,15 +15,17 @@
   "exports": {
     ".": {
       "types": "./dist/main.d.ts",
-      "import": "./dist/warcraft3-ui.es.js",
-      "require": "./dist/warcraft3-ui.umd.js"
+      "import": "./dist/warcraft-ui.es.js",
+      "require": "./dist/warcraft-ui.umd.js"
     },
-    "./style.css": "./dist/assets/warcraft3-ui.css"
+    "./style.css": "./dist/assets/warcraft-ui.css"
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview"
+    "build": "tsc -b && vite build --config vite.lib.config.ts",
+    "build:demo": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview --outDir dist-demo"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -33,7 +35,6 @@
     "url": "git+https://github.com/sektant1/warcraft-ui.git"
   },
   "dependencies": {
-    "@sektant1/warcraft3-ui": "file:sektant1-warcraft3-ui-0.1.0.tgz",
     "gl-matrix": "^3.4.3",
     "storybook": "^10.3.4",
     "war3-model": "^4.0.1"
