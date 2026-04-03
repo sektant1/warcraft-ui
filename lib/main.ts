@@ -1,3 +1,5 @@
+import "../src/index.css";
+
 // Config
 export { setAssetsBaseUrl } from "../src/utils/config";
 
