@@ -14,9 +14,9 @@ import {
   EscCheckbox,
   RACES,
   type Race,
-} from "../lib/main";
+} from "@sektant1/warcraft-ui";
 
-import "./index.css";
+import "@sektant1/warcraft-ui/style.css";
 
 function App() {
   const race = useCurrentRace();
