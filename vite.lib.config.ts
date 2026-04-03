@@ -14,11 +14,11 @@ export default defineConfig({
   ],
   build: {
     target: ["esnext"],
-    copyPublicDir: false,
+    copyPublicDir: true,
     lib: {
       entry: resolve(__dirname, "lib/main.ts"),
       name: "warcraft-ui",
-      formats: ["es"],
+      formats: ["es", "umd"],
       fileName: "warcraft-ui",
     },
     rollupOptions: {
@@ -27,8 +27,12 @@ export default defineConfig({
         globals: {
           react: "React",
           "react-dom": "ReactDOM",
+          "react/jsx-runtime": "react/jsx-runtime",
         },
+        // Keep asset names readable (important for .blp/.mdx)
+        assetFileNames: "assets/[name][extname]",
       },
     },
+    cssCodeSplit: false,
   },
 });
