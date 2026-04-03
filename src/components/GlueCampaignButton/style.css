@@ -1,0 +1,27 @@
+.campaign-button {
+  position: relative;
+  height: 42px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  color: var(--wc3-gold, #fcd312);
+  font-family: "Friz Quadrata", serif;
+  font-size: 0.95rem;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.95);
+}
+
+.campaign-button:disabled {
+  cursor: default;
+  color: #808080;
+}
+
+.campaign-button > span {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}

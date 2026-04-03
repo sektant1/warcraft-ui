@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { loadBlpDataUrl, useNineSliceButton } from "../../utils/glueButton";
 import type { NineSliceUrls } from "../../utils/glueButton";
+import "../GlueScreenButton/style.css";
 
 const PATHS = {
   bg: "./buttons/glue/GlueScreen-Button1-BackdropBackground.blp",

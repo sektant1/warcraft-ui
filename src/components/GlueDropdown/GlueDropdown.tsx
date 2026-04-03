@@ -4,6 +4,7 @@ import {
   loadDataUrlImage,
   drawGlueNineSliceToCanvas,
 } from "../../utils/glueButton";
+import "./style.css";
 
 const BLP = {
   bg: "./buttons/glue/GlueScreen-Button1-BackdropBackground.blp",
