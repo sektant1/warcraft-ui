@@ -5,7 +5,7 @@ import { resolve } from "node:path";
 
 export default defineConfig({
   plugins: [react(), dts({ insertTypesEntry: true })],
-
+  base: "/warcraft-ui/",
   build: {
     lib: {
       entry: resolve(__dirname, "lib/main.ts"),
@@ -27,5 +27,11 @@ export default defineConfig({
     },
     // Ensure CSS is emitted as a single file
     cssCodeSplit: false,
+  },
+  server: {
+    port: 3000,
+    proxy: {
+      "/api": { target: "http://localhost:3001", changeOrigin: true },
+    },
   },
 });
