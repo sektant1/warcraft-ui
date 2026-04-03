@@ -4,7 +4,6 @@ import { resolve } from "node:path";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/warcraft-ui/",
   resolve: {
     alias: {
       "@sektant1/warcraft-ui/style.css": resolve(__dirname, "src/index.css"),
@@ -13,6 +12,5 @@ export default defineConfig({
   },
   build: {
     outDir: "demo",
-    emptyOutDir: true,
   },
 });

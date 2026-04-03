@@ -139,9 +139,6 @@ function App() {
             <HeroPortraitModel race={race} />
             <WorkerUnitModel race={race} side="left" />
           </div>
-          <div style={{ display: "flex", gap: 12 }}>
-            <TimeIndicatorModel race={race} />
-          </div>
         </div>
 
         {/* ── Column 2: ESC Menu Controls ── */}
@@ -335,7 +332,6 @@ function App() {
               </div>
             </div>
           </Section>
-
         </div>
       </div>
     </>
