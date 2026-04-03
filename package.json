@@ -35,7 +35,6 @@
     "url": "git+https://github.com/sektant1/warcraft-ui.git"
   },
   "dependencies": {
-    "@sektant1/warcraft-ui": "^0.1.8",
     "gl-matrix": "^3.4.3",
     "storybook": "^10.3.4",
     "war3-model": "^4.0.1"
