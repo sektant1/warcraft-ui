@@ -58,7 +58,7 @@
   left: 0;
   right: 0;
   z-index: 10;
-  padding: 4px 0;
+  padding: 15px;
 }
 
 .popup-menu-canvas {
@@ -73,6 +73,7 @@
 .popup-menu-option {
   position: relative;
   z-index: 1;
+  width: 100%;
   padding: 4px 10px;
   color: var(--wc3-gold, #fcd312);
   font-family: "Friz Quadrata", serif;

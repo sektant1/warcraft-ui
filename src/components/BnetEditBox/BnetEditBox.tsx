@@ -4,6 +4,7 @@ import {
   loadDataUrlImage,
   drawTemplateNineSliceToCanvas,
 } from "../../utils/glueButton";
+import "./style.css";
 
 const BG_BLP = "./buttons/editbox/bnet-inputbox-back.blp";
 const BORDER_BLP = "./buttons/editbox/bnet-inputbox-border.blp";

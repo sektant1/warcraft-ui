@@ -7,7 +7,6 @@ import {
   GlueMenuButton,
   GlueCampaignButton,
   GlueDropdown,
-  GlueScrollbar,
   GlueListBox,
   useCurrentRace,
   setCurrentRace,
@@ -20,17 +19,16 @@ import {
   EscRadioButton,
   EscCheckbox,
   EscSlider,
-  EscEditBox,
-  BnetEditBox,
+  InputBox,
   StatBar,
   LoadingBar,
   MenuPanel,
   Tooltip,
   RACES,
   type Race,
-} from "@sektant1/warcraft-ui";
+} from "../lib/main";
 
-import "@sektant1/warcraft-ui/style.css";
+import "./index.css";
 
 const DIFFICULTIES = ["Easy", "Normal", "Hard", "Insane"] as const;
 const MAP_LIST = [
@@ -88,14 +86,12 @@ function App() {
   const [musicVolume, setMusicVolume] = useState(0.7);
   const [sfxVolume, setSfxVolume] = useState(0.5);
   const [playerName, setPlayerName] = useState("");
-  const [chatMsg, setChatMsg] = useState("");
   const [difficulty, setDifficulty] = useState<string>("Normal");
   const [selectedMap, setSelectedMap] = useState<string>("Lost Temple");
   const [loadProgress, setLoadProgress] = useState(42);
   const [health, setHealth] = useState(75);
   const [mana, setMana] = useState(60);
   const [xp, setXp] = useState(35);
-  const [listScroll, setListScroll] = useState(0);
 
   return (
     <>
@@ -139,11 +135,11 @@ function App() {
             alignItems: "center",
           }}
         >
-          <div style={{ width: 200 }}>
+          <div style={{ width: 300 }}>
             <HeroPortraitModel race={race} />
+            <WorkerUnitModel race={race} side="left" />
           </div>
           <div style={{ display: "flex", gap: 12 }}>
-            <WorkerUnitModel race={race} side="left" />
             <TimeIndicatorModel race={race} />
           </div>
         </div>
@@ -185,8 +181,8 @@ function App() {
             <EscSlider label="SFX" value={sfxVolume} onChange={setSfxVolume} />
           </Section>
 
-          <Section title="Edit Box">
-            <EscEditBox
+          <Section title="Input Box">
+            <InputBox
               value={playerName}
               placeholder="Player name..."
               onChange={setPlayerName}
@@ -237,17 +233,18 @@ function App() {
 
           <Section title="Dropdown">
             <GlueDropdown
-              options={DIFFICULTIES}
-              value={difficulty as (typeof DIFFICULTIES)[number]}
-              onChange={setDifficulty}
+              options={MAP_LIST}
+              value={selectedMap as (typeof MAP_LIST)[number]}
+              onChange={setSelectedMap}
             />
           </Section>
 
           <Section title="Bnet Edit Box">
-            <BnetEditBox
-              value={chatMsg}
-              placeholder="Type a message..."
-              onChange={setChatMsg}
+            <GlueListBox
+              items={DIFFICULTIES}
+              value={difficulty as (typeof DIFFICULTIES)[number]}
+              onChange={setDifficulty}
+              height={120}
             />
           </Section>
         </div>
@@ -261,12 +258,7 @@ function App() {
               fillPercent={health}
               maxValue={1200}
             />
-            <StatBar
-              label="MP"
-              type="mana"
-              fillPercent={mana}
-              maxValue={400}
-            />
+            <StatBar label="MP" type="mana" fillPercent={mana} maxValue={400} />
             <StatBar type="xp" fillPercent={xp} hasBorder />
             <StatBar type="build" fillPercent={62} hasBorder />
             <div style={{ display: "flex", gap: 6 }}>
@@ -280,9 +272,7 @@ function App() {
               >
                 +MP
               </GlueSmallButton>
-              <GlueSmallButton
-                onClick={() => setXp(Math.min(100, xp + 10))}
-              >
+              <GlueSmallButton onClick={() => setXp(Math.min(100, xp + 10))}>
                 +XP
               </GlueSmallButton>
             </div>
@@ -346,20 +336,6 @@ function App() {
             </div>
           </Section>
 
-          <Section title="Scrollbar">
-            <div style={{ display: "flex", gap: 8, height: 80 }}>
-              <span
-                style={{
-                  color: "#ccc",
-                  fontSize: 12,
-                  fontFamily: '"Friz Quadrata", serif',
-                }}
-              >
-                {Math.round(listScroll)}%
-              </span>
-              <GlueScrollbar value={listScroll} onChange={setListScroll} />
-            </div>
-          </Section>
         </div>
       </div>
     </>

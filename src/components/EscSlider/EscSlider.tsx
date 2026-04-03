@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useBlpTextures, useCanvasRenderer } from "../../utils/blpLoader";
+import { rotateCellClockwise } from "../../utils/glueButton";
 import { useCurrentRace, RACE_PREFIXES } from "../../state/race";
 import "./style.css";
 
@@ -9,6 +10,8 @@ interface Props {
   onChange?: (value: number) => void;
   defaultValue?: number;
 }
+
+const TRACK_H = 20;
 
 export default function EscSlider({
   label,
@@ -40,8 +43,66 @@ export default function EscSlider({
   const draw = useCallback(
     (ctx: CanvasRenderingContext2D, w: number, h: number) => {
       if (!tex) return;
-      ctx.drawImage(tex.bg, 0, 0, w, h);
-      ctx.drawImage(tex.border, 0, 0, w, h);
+
+      const trackY = Math.floor((h - TRACK_H) / 2);
+
+      // Fill track background (tiled pattern)
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(0, trackY, w, TRACK_H);
+      ctx.clip();
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, trackY, w, TRACK_H);
+      const pattern = ctx.createPattern(tex.bg, "repeat");
+      if (pattern) {
+        ctx.fillStyle = pattern;
+        ctx.fillRect(0, trackY, w, TRACK_H);
+      }
+      ctx.restore();
+
+      // Nine-slice border on the track rect
+      const atlasW = tex.border.width;
+      const atlasH = tex.border.height;
+      const cellW = atlasW / 8;
+      const corner = Math.max(
+        1,
+        Math.floor(Math.min(cellW, TRACK_H * 0.35, w / 2, TRACK_H / 2)),
+      );
+
+      const drawCell = (
+        idx: number,
+        x: number,
+        y: number,
+        cw: number,
+        ch: number,
+      ) => {
+        if (cw <= 0 || ch <= 0) return;
+        ctx.drawImage(tex.border, idx * cellW, 0, cellW, atlasH, x, y, cw, ch);
+      };
+
+      // Corners
+      drawCell(4, 0, trackY, corner, corner);
+      drawCell(5, w - corner, trackY, corner, corner);
+      drawCell(6, 0, trackY + TRACK_H - corner, corner, corner);
+      drawCell(7, w - corner, trackY + TRACK_H - corner, corner, corner);
+
+      // Left / right vertical edges
+      const edgeH = TRACK_H - corner * 2;
+      if (edgeH > 0) {
+        drawCell(0, 0, trackY + corner, corner, edgeH);
+        drawCell(1, w - corner, trackY + corner, corner, edgeH);
+      }
+
+      // Top / bottom horizontal edges (rotated cells)
+      const edgeW = w - corner * 2;
+      if (edgeW > 0) {
+        const topRot = rotateCellClockwise(tex.border, 2, cellW, atlasH);
+        const botRot = rotateCellClockwise(tex.border, 3, cellW, atlasH);
+        ctx.drawImage(topRot, corner, trackY, edgeW, corner);
+        ctx.drawImage(botRot, corner, trackY + TRACK_H - corner, edgeW, corner);
+      }
+
+      // Knob (centered on the full canvas height)
       const knobW = 20,
         knobH = 28;
       const knobX = value * w - knobW / 2;

@@ -79,8 +79,8 @@ export async function loadDataUrlImage(url: string): Promise<HTMLImageElement> {
   return promise;
 }
 
-function rotateCellClockwise(
-  atlas: HTMLImageElement,
+export function rotateCellClockwise(
+  atlas: HTMLImageElement | HTMLCanvasElement,
   cellIndex: number,
   cellW: number,
   cellH: number,

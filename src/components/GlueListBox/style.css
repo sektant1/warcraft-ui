@@ -16,14 +16,22 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
+  z-index: 1;
+}
+
+.wc-listbox-mask {
+  position: absolute;
+  inset: 16px;
+  overflow: hidden;
+  z-index: 2;
 }
 
 .wc-listbox-items {
-  position: relative;
+  position: absolute;
+  inset: 0;
   overflow-y: scroll;
-  height: 100%;
   scrollbar-width: none;
-  padding: 4px 0;
+  padding: 2px 0;
 }
 
 .wc-listbox-items::-webkit-scrollbar {
@@ -44,6 +52,7 @@
 
 .wc-listbox-item:hover {
   color: #fff;
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .wc-listbox-item--selected {

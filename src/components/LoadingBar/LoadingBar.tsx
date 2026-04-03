@@ -22,20 +22,37 @@ export default function LoadingBar({ progress }: Props) {
     (ctx: CanvasRenderingContext2D, w: number, h: number) => {
       if (!tex) return;
 
-      // Background
-      ctx.drawImage(tex.bg, 0, 0, w, h);
+      // Compute inset from border atlas (8-cell horizontal strip)
+      const cellW = tex.border.width / 8;
+      const corner = Math.max(
+        1,
+        Math.floor(Math.min(cellW, h * 0.35, w / 2, h / 2)),
+      );
+      const inset = Math.max(1, Math.round(corner * 0.25));
+
+      // Background tiled, clipped inside border
+      ctx.save();
+      ctx.beginPath();
+      ctx.rect(inset, inset, w - inset * 2, h - inset * 2);
+      ctx.clip();
+      const bgPattern = ctx.createPattern(tex.bg, "repeat");
+      if (bgPattern) {
+        ctx.fillStyle = bgPattern;
+        ctx.fillRect(inset, inset, w - inset * 2, h - inset * 2);
+      }
+      ctx.restore();
 
       // Tiled fill
-      const fillPx = ((w - 8) * pct) / 100;
+      const fillPx = ((w - inset * 2) * pct) / 100;
       if (fillPx > 0) {
         const pattern = ctx.createPattern(tex.fill, "repeat");
         if (pattern) {
           ctx.save();
           ctx.beginPath();
-          ctx.rect(4, 4, fillPx, h - 8);
+          ctx.rect(inset, inset, fillPx + 10, h - inset * 5);
           ctx.clip();
           ctx.fillStyle = pattern;
-          ctx.fillRect(4, 4, fillPx, h - 8);
+          ctx.fillRect(inset, inset, fillPx, h - inset * 2);
           ctx.restore();
         }
       }

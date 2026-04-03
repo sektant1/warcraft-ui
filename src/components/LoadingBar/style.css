@@ -4,7 +4,7 @@
   aspect-ratio: 8.007 / 1;
   height: auto;
   max-height: 80px;
-  overflow: visible;
+  overflow: hidden;
 }
 
 .wc-loading-bar .wc-lb-text {

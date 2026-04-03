@@ -7,8 +7,8 @@ import {
 import GlueScrollbar from "../GlueScrollbar/GlueScrollbar";
 import "./style.css";
 
-const BG_BLP = "./buttons/popup/GlueScreen-Pulldown-BackdropBackground.blp";
-const BORDER_BLP = "./buttons/glue/GlueScreen-Button1-BackdropBorder.blp";
+const BG_BLP = "./buttons/editbox/bnet-inputbox-back.blp";
+const BORDER_BLP = "./buttons/editbox/bnet-inputbox-border.blp";
 
 interface GlueListBoxProps<T extends string> {
   items: readonly T[];
@@ -71,23 +71,25 @@ export default function GlueListBox<T extends string>({
     <div className="wc-listbox" style={{ height }}>
       <div className="wc-listbox-body">
         <canvas ref={canvasRef} className="wc-listbox-canvas" />
-        <div
-          ref={listRef}
-          className="wc-listbox-items"
-          role="listbox"
-          onScroll={handleScroll}
-        >
-          {items.map((item) => (
-            <div
-              key={item}
-              role="option"
-              aria-selected={value === item}
-              className={`wc-listbox-item${value === item ? " wc-listbox-item--selected" : ""}`}
-              onClick={() => onChange(item)}
-            >
-              {label ? label(item) : item}
-            </div>
-          ))}
+        <div className="wc-listbox-mask">
+          <div
+            ref={listRef}
+            className="wc-listbox-items"
+            role="listbox"
+            onScroll={handleScroll}
+          >
+            {items.map((item) => (
+              <div
+                key={item}
+                role="option"
+                aria-selected={value === item}
+                className={`wc-listbox-item${value === item ? " wc-listbox-item--selected" : ""}`}
+                onClick={() => onChange(item)}
+              >
+                {label ? label(item) : item}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <GlueScrollbar value={scroll} onChange={setScroll} />

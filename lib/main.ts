@@ -47,7 +47,7 @@ export { default as GlueListBox } from "../src/components/GlueListBox/GlueListBo
 export { default as EscCheckbox } from "../src/components/EscCheckbox/EscCheckbox";
 export { default as EscRadioButton } from "../src/components/EscRadioButton/EscRadioButton";
 export { default as EscSlider } from "../src/components/EscSlider/EscSlider";
-export { default as EscEditBox } from "../src/components/EscEditBox/EscEditBox";
+export { default as InputBox } from "../src/components/InputBox/InputBox";
 export { default as EscOptionButton } from "../src/components/EscOptionButton/EscOptionButton";
 
 // Components — edit boxes

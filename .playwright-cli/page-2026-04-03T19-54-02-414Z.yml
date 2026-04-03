@@ -1,0 +1,606 @@
+- generic [ref=e3]:
+  - generic:
+    - generic:
+      - generic [ref=e4]:
+        - button "Human" [ref=e5]:
+          - generic [ref=e7]: Human
+        - button "Orc" [ref=e8]:
+          - generic [ref=e10]: Orc
+        - button "Night Elf" [ref=e11]:
+          - generic [ref=e13]: Night Elf
+        - button "Undead" [ref=e14]:
+          - generic [ref=e16]: Undead
+      - generic:
+        - img "Gold"
+        - generic: "30"
+        - img "Lumber"
+        - generic: "20"
+        - img "Supply"
+        - generic: 0/10
+        - generic: No Upkeep
+  - generic [ref=e18]:
+    - generic [ref=e21]:
+      - img "WC3UI" [ref=e22]
+      - paragraph [ref=e23]: Battle-tested components forged in Azeroth.
+      - paragraph [ref=e24]:
+        - text: A themeable, accessible component library inspired by the Warcraft III interface.
+        - text: Ships with four faction themes out of the box.
+        - strong [ref=e25]: 1.2kb core
+        - text: · Zero dependencies · Framework-agnostic.
+      - generic [ref=e26]:
+        - button "Get S tarted" [ref=e27]:
+          - generic [ref=e29]:
+            - text: Get
+            - generic [ref=e30]: S
+            - text: tarted
+        - textbox "Copy install command" [ref=e32]: npm i wc3ui
+      - generic [ref=e33]: Patch 1.27b
+      - paragraph [ref=e34]: Used by 2,300+ developers · 11.4k GitHub stars · Compatible with React, Vue, Svelte, and vanilla JS
+    - generic [ref=e36]:
+      - paragraph [ref=e37]: Every component adapts to your chosen faction. One prop changes everything. We wish CSS had thought of this.
+      - generic [ref=e38]:
+        - article [ref=e39]:
+          - generic [ref=e40]: Human
+          - generic [ref=e41]:
+            - generic [ref=e42]:
+              - generic [ref=e43]: Button
+              - button "O ptions" [ref=e44]:
+                - generic [ref=e46]:
+                  - generic [ref=e47]: O
+                  - text: ptions
+            - generic [ref=e48]:
+              - generic [ref=e49]: Slider
+              - generic [ref=e50]:
+                - generic [ref=e51]: 55%
+                - slider "Human slider preview" [ref=e53]: "55"
+        - article [ref=e54]:
+          - generic [ref=e55]: Orc
+          - generic [ref=e56]:
+            - generic [ref=e57]:
+              - generic [ref=e58]: Button
+              - button "O ptions" [ref=e59]:
+                - generic [ref=e61]:
+                  - generic [ref=e62]: O
+                  - text: ptions
+            - generic [ref=e63]:
+              - generic [ref=e64]: Slider
+              - generic [ref=e65]:
+                - generic [ref=e66]: 55%
+                - slider "Orc slider preview" [ref=e68]: "55"
+        - article [ref=e69]:
+          - generic [ref=e70]: Night Elf
+          - generic [ref=e71]:
+            - generic [ref=e72]:
+              - generic [ref=e73]: Button
+              - button "O ptions" [ref=e74]:
+                - generic [ref=e76]:
+                  - generic [ref=e77]: O
+                  - text: ptions
+            - generic [ref=e78]:
+              - generic [ref=e79]: Slider
+              - generic [ref=e80]:
+                - generic [ref=e81]: 55%
+                - slider "Night Elf slider preview" [ref=e83]: "55"
+        - article [ref=e84]:
+          - generic [ref=e85]: Undead
+          - generic [ref=e86]:
+            - generic [ref=e87]:
+              - generic [ref=e88]: Button
+              - button "O ptions" [ref=e89]:
+                - generic [ref=e91]:
+                  - generic [ref=e92]: O
+                  - text: ptions
+            - generic [ref=e93]:
+              - generic [ref=e94]: Slider
+              - generic [ref=e95]:
+                - generic [ref=e96]: 55%
+                - slider "Undead slider preview" [ref=e98]: "55"
+    - generic [ref=e100]:
+      - heading "Buttons" [level=3] [ref=e101]
+      - paragraph [ref=e102]: Beveled, gold-trimmed buttons with faction-aware theming and glow states. Your design system has a primary button. Ours has four.
+      - generic [ref=e103]:
+        - generic [ref=e104]:
+          - heading "Faction Tab" [level=4] [ref=e105]
+          - paragraph [ref=e106]: Race selector from the top bar. Text turns gold on hover and when active.
+          - generic [ref=e107]:
+            - generic [ref=e108]:
+              - button "Human" [ref=e109]:
+                - generic [ref=e111]: Human
+              - generic [ref=e112]: Normal
+            - generic [ref=e113]:
+              - button "Human" [ref=e114]:
+                - generic [ref=e116]: Human
+              - generic [ref=e117]: Active
+            - generic [ref=e118]:
+              - button "Human" [disabled] [ref=e119]:
+                - generic [ref=e121]: Human
+              - generic [ref=e122]: Disabled
+        - generic [ref=e123]:
+          - heading "Options Menu Button" [level=4] [ref=e124]
+          - paragraph [ref=e125]: Race-themed buttons from the in-game options menu. Each faction has unique background, border, and hover textures.
+          - generic [ref=e126]:
+            - generic [ref=e127]:
+              - button "Options" [ref=e128]:
+                - generic [ref=e130]: Options
+              - generic [ref=e131]: Normal
+            - generic [ref=e132]:
+              - button "Options" [disabled] [ref=e133]:
+                - generic [ref=e135]: Options
+              - generic [ref=e136]: Disabled
+        - generic [ref=e137]:
+          - heading "Main Menu Button" [level=4] [ref=e138]
+          - paragraph [ref=e139]: Primary action button inside a decorative border frame, used for items like Single Player and Multiplayer.
+          - generic [ref=e140]:
+            - generic [ref=e141]:
+              - button "S ingle Player" [ref=e143]:
+                - generic [ref=e145]:
+                  - generic [ref=e146]: S
+                  - text: ingle Player
+              - generic [ref=e147]: Normal
+            - generic [ref=e148]:
+              - button "Single Player" [disabled] [ref=e150]:
+                - generic [ref=e152]: Single Player
+              - generic [ref=e153]: Disabled
+        - generic [ref=e154]:
+          - heading "Dialog Button" [level=4] [ref=e155]
+          - paragraph [ref=e156]: Standalone confirm button with a narrower frame, used for single-action dialogs and prompts.
+          - generic [ref=e157]:
+            - generic [ref=e158]:
+              - button "O K" [ref=e160]:
+                - generic [ref=e162]:
+                  - generic [ref=e163]: O
+                  - text: K
+              - generic [ref=e164]: Normal
+            - generic [ref=e165]:
+              - button "OK" [disabled] [ref=e167]:
+                - generic [ref=e169]: OK
+              - generic [ref=e170]: Disabled
+        - generic [ref=e171]:
+          - heading "Button Border Variants" [level=4] [ref=e172]
+          - paragraph [ref=e173]: Decorative border frames in several sizes, from large multi-button panels down to tiny compact frames.
+        - generic [ref=e174]:
+          - heading "Login Screen Button" [level=4] [ref=e175]
+          - paragraph [ref=e176]: Standard button from the login and menu screens. Tiled stone background with a gold border and hover glow.
+          - generic [ref=e177]:
+            - generic [ref=e178]:
+              - button "S ingle Player" [ref=e179]:
+                - generic [ref=e181]:
+                  - generic [ref=e182]: S
+                  - text: ingle Player
+              - generic [ref=e183]: Normal
+            - generic [ref=e184]:
+              - button "Single Player" [disabled] [ref=e185]:
+                - generic [ref=e187]: Single Player
+              - generic [ref=e188]: Disabled
+        - generic [ref=e189]:
+          - heading "Bordered Button" [level=4] [ref=e190]
+          - paragraph [ref=e191]: Button variant with a heavier decorative edge, same stone backdrop and hover glow.
+          - generic [ref=e192]:
+            - generic [ref=e193]:
+              - button "R eplay" [ref=e194]:
+                - generic [ref=e196]:
+                  - generic [ref=e197]: R
+                  - text: eplay
+              - generic [ref=e198]: Normal
+            - generic [ref=e199]:
+              - button "Replay" [disabled] [ref=e200]:
+                - generic [ref=e202]: Replay
+              - generic [ref=e203]: Disabled
+        - generic [ref=e204]:
+          - heading "Small Button" [level=4] [ref=e205]
+          - paragraph [ref=e206]: Compact button for secondary actions like profile settings and realm selection.
+          - generic [ref=e207]:
+            - generic [ref=e208]:
+              - button "OK" [ref=e209]:
+                - generic [ref=e211]: OK
+              - generic [ref=e212]: Normal
+            - generic [ref=e213]:
+              - button "OK" [disabled] [ref=e214]:
+                - generic [ref=e216]: OK
+              - generic [ref=e217]: Disabled
+        - generic [ref=e218]:
+          - heading "Campaign Button" [level=4] [ref=e219]
+          - paragraph [ref=e220]: Campaign menu button with its own unique backdrop and border textures.
+          - generic [ref=e221]:
+            - generic [ref=e222]:
+              - button "C ampaign" [ref=e223]:
+                - generic [ref=e225]:
+                  - generic [ref=e226]: C
+                  - text: ampaign
+              - generic [ref=e227]: Normal
+            - generic [ref=e228]:
+              - button "Campaign" [disabled] [ref=e229]:
+                - generic [ref=e231]: Campaign
+              - generic [ref=e232]: Disabled
+        - generic [ref=e233]:
+          - heading "Ability Button" [level=4] [ref=e234]
+          - paragraph [ref=e235]: Ability buttons from the in-game command card grid with pressed, disabled, and cooldown states.
+          - generic [ref=e236]:
+            - generic [ref=e237]:
+              - button "Holy Bolt (Q)" [ref=e238]:
+                - generic: Q
+              - generic [ref=e239]: Interactive
+            - generic [ref=e240]:
+              - button "Holy Bolt active autocast (Q)" [pressed] [ref=e241]:
+                - generic: Q
+              - generic [ref=e242]: Active
+            - generic [ref=e243]:
+              - button "Holy Bolt pressed (Q)" [ref=e244]:
+                - generic: Q
+              - generic [ref=e245]: Pressed
+            - generic [ref=e246]:
+              - button "Holy Bolt disabled (Q)" [disabled] [ref=e247]:
+                - generic: Q
+              - generic [ref=e248]: Disabled
+            - generic [ref=e249]:
+              - button "Holy Bolt cooling down (Q)" [disabled] [ref=e250]:
+                - generic: Q
+              - generic [ref=e251]: Cooldown
+            - generic [ref=e252]:
+              - 'button "Holy Bolt unavailable: insufficient mana (Q)" [disabled] [ref=e253]':
+                - generic: Q
+              - generic [ref=e254]: No Resources
+    - generic [ref=e256]:
+      - heading "Controls" [level=3] [ref=e257]
+      - paragraph [ref=e258]: Checkboxes, sliders, radio buttons, and edit fields. Every form deserves the production value of an options menu.
+      - generic [ref=e259]:
+        - generic [ref=e260]:
+          - heading "Dropdown" [level=4] [ref=e261]
+          - paragraph [ref=e262]: Pull-down selector with a dedicated arrow, used for option menus and popup lists.
+          - generic [ref=e263]:
+            - generic [ref=e264]:
+              - button "High" [ref=e266]:
+                - generic [ref=e267]: High
+              - generic [ref=e268]: Interactive
+            - generic [ref=e269]:
+              - button "High" [disabled] [ref=e270]:
+                - generic [ref=e271]: High
+              - generic [ref=e272]: Disabled
+        - generic [ref=e273]:
+          - heading "Slider" [level=4] [ref=e274]
+          - paragraph [ref=e275]: Options menu slider with a shared track and a race-specific thumb.
+          - generic [ref=e276]:
+            - generic [ref=e277]:
+              - generic [ref=e278]:
+                - generic [ref=e279]: 55%
+                - slider "Esc menu slider" [ref=e281]: "55"
+              - generic [ref=e282]: Interactive
+            - generic [ref=e283]:
+              - generic [ref=e285]: 65%
+              - generic [ref=e287]: Disabled
+        - generic [ref=e288]:
+          - heading "Checkbox" [level=4] [ref=e289]
+          - paragraph [ref=e290]: In-game option toggle. The pressed background is race-specific while the check mark and base are shared.
+          - generic [ref=e291]:
+            - generic [ref=e292]:
+              - checkbox [ref=e293]
+              - generic [ref=e294]: Interactive
+            - generic [ref=e297]: Checked
+            - generic [ref=e300]: Unchecked
+            - generic [ref=e303]: Disabled Checked
+            - generic [ref=e306]: Disabled
+        - generic [ref=e307]:
+          - heading "Radio Button" [level=4] [ref=e308]
+          - paragraph [ref=e309]: Mutually exclusive option selector. The selected dot glows over a stone background, shared across all races.
+          - generic [ref=e310]:
+            - generic [ref=e311]:
+              - generic [ref=e312]:
+                - radio [checked] [ref=e313]
+                - radio [ref=e314]
+                - radio [ref=e315]
+              - generic [ref=e316]: Interactive Group
+            - generic [ref=e319]: Selected
+            - generic [ref=e322]: Unselected
+            - generic [ref=e325]: Disabled Selected
+            - generic [ref=e328]: Disabled
+        - generic [ref=e329]:
+          - heading "Text Input" [level=4] [ref=e330]
+          - paragraph [ref=e331]: "Text fields in two styles: a decorated race-themed variant for in-game menus and a plain Battle.net variant for login screens."
+          - generic [ref=e332]:
+            - generic [ref=e333]:
+              - textbox "Esc menu edit box" [ref=e335]: PlayerOne
+              - generic [ref=e336]: Esc Decorated
+            - generic [ref=e337]:
+              - textbox "Esc menu edit box disabled" [disabled] [ref=e339]: Unavailable
+              - generic [ref=e340]: Esc Disabled
+          - generic [ref=e342]:
+            - textbox "Standard glue edit box" [ref=e344]: Azeroth-1
+            - generic [ref=e345]: Standard (Glue/BNet)
+        - generic [ref=e346]:
+          - heading "Scrollbar" [level=4] [ref=e347]
+          - paragraph [ref=e348]: Vertical scroll track with up/down arrows and a draggable knob, from the login and menu screens.
+          - generic [ref=e349]:
+            - generic [ref=e350]:
+              - generic [ref=e351]:
+                - button "Scroll up" [ref=e352]
+                - slider "Glue scrollbar position" [ref=e354]: "38"
+                - button "Scroll down" [ref=e355]
+              - generic [ref=e356]: Interactive
+            - generic [ref=e357]:
+              - generic [ref=e358]:
+                - button [disabled] [ref=e359]
+                - button [disabled] [ref=e361]
+              - generic [ref=e362]: Disabled
+        - generic [ref=e363]:
+          - heading "Text Area" [level=4] [ref=e364]
+          - paragraph [ref=e365]: Scrollable text panel with a decorated border and attached scroll thumb, used in the options menu.
+          - generic [ref=e367]:
+            - generic [ref=e368]:
+              - generic [ref=e371]:
+                - generic [ref=e372]: "[00:31] Quest updated: Defend the village gates."
+                - generic [ref=e373]: "[00:42] Hint: Keep militia near the lumber line."
+                - generic [ref=e374]: "[00:58] Footman training complete."
+                - generic [ref=e375]: "[01:04] Arcane Tower construction started."
+                - generic [ref=e376]: "[01:12] No Upkeep active."
+                - generic [ref=e377]: "[01:25] Peasant assigned to Gold Mine."
+                - generic [ref=e378]: "[01:33] Scout report: enemy units sighted in the north."
+                - generic [ref=e379]: "[01:48] Town Hall upgrade queued."
+                - generic [ref=e380]: "[02:03] Warning: You are under attack!"
+                - generic [ref=e381]: "[02:21] Militia duration expired."
+                - generic [ref=e382]: "[02:39] Lumber total reached 120."
+                - generic [ref=e383]: "[02:56] Defend researched at Barracks."
+              - slider "Esc text area scroll position" [ref=e385]: "18"
+            - generic [ref=e386]: Interactive Log Panel
+        - generic [ref=e387]:
+          - heading "List Box" [level=4] [ref=e388]
+          - paragraph [ref=e389]: Bordered scrollable list from the menu screens, pairing a text input container with a scrollbar.
+          - generic [ref=e391]:
+            - generic [ref=e392]:
+              - generic [ref=e395]:
+                - button "Slow" [ref=e396]
+                - button "Normal" [ref=e397]
+                - button "Fast" [ref=e398]
+                - button "Faster" [ref=e399]
+                - button "Ludicrous" [ref=e400]
+                - button "Insane" [ref=e401]
+                - button "Observer" [ref=e402]
+                - button "Random" [ref=e403]
+              - generic [ref=e404]:
+                - button "Listbox scroll up" [ref=e405]
+                - slider "Listbox scroll position" [ref=e407]: "12"
+                - button "Listbox scroll down" [ref=e408]
+            - generic [ref=e409]: Selectable Items
+    - generic [ref=e411]:
+      - heading "Resource Counters" [level=3] [ref=e412]
+      - paragraph [ref=e413]: Animated numeric display with icon slot. For when a number needs to feel important. Ticks up smoothly like gold flowing into your treasury.
+      - generic [ref=e414]:
+        - generic [ref=e415]:
+          - generic [ref=e416]:
+            - img "Gold" [ref=e417]
+            - generic [ref=e418]: "30"
+          - generic [ref=e419]: Gold
+        - generic [ref=e420]:
+          - generic [ref=e421]:
+            - img "Lumber" [ref=e422]
+            - generic [ref=e423]: "20"
+          - generic [ref=e424]: Lumber
+        - generic [ref=e425]:
+          - generic [ref=e426]:
+            - img "Supply" [ref=e427]
+            - generic [ref=e428]: 0/10
+          - generic [ref=e429]: Supply
+        - generic [ref=e430]:
+          - generic [ref=e432]: No Upkeep
+          - generic [ref=e433]: Upkeep
+    - generic [ref=e435]:
+      - heading "CommandCard" [level=3] [ref=e436]
+      - paragraph [ref=e437]: A spatial action grid with hotkey hints, cooldown states, and empty-slot affordances. Faster than a command palette — your users already know the layout.
+      - grid "Command card preview" [ref=e439]:
+        - gridcell "Move (Q)" [ref=e440]:
+          - button "Move (Q)" [ref=e441]:
+            - generic: Q
+        - gridcell "Stop (W)" [ref=e442]:
+          - button "Stop (W)" [ref=e443]:
+            - generic: W
+        - gridcell "Hold Position (E)" [ref=e444]:
+          - button "Hold Position (E)" [ref=e445]:
+            - generic: E
+        - gridcell "Attack (R)" [ref=e446]:
+          - button "Attack (R)" [ref=e447]:
+            - generic: R
+        - gridcell "Patrol (A)" [ref=e448]:
+          - button "Patrol (A)" [ref=e449]:
+            - generic: A
+        - gridcell [ref=e450]
+        - gridcell [ref=e452]
+        - gridcell "Learn Skill (F)" [ref=e454]:
+          - button "Learn Skill (F)" [ref=e455]:
+            - generic: F
+        - gridcell "Wind Walk (Z)" [ref=e456]:
+          - button "Wind Walk (Z)" [ref=e457]:
+            - generic: Z
+        - gridcell "Mirror Image (X)" [ref=e458]:
+          - button "Mirror Image (X)" [ref=e459]:
+            - generic: X
+        - gridcell "Critical Strike (C)" [ref=e460]:
+          - button "Critical Strike (C)" [ref=e461]:
+            - generic: C
+        - gridcell "Bladestorm (V)" [ref=e462]:
+          - button "Bladestorm (V)" [ref=e463]:
+            - generic: V
+    - generic [ref=e465]:
+      - heading "Unit Queue" [level=3] [ref=e466]
+      - paragraph [ref=e467]: A task queue with progress indicator and cancelable pending slots. Perfect for managing build pipelines, AI agent workflows, or anything that trains in 30 seconds.
+      - generic "Build queue backdrop preview" [ref=e469]
+    - generic [ref=e472]:
+      - heading "Tooltip" [level=3] [ref=e473]
+      - paragraph [ref=e474]:
+        - text: Rich content tooltips with title, description, hotkey badge, and inline resource costs. Your
+        - code [ref=e475]: title
+        - text: attribute could never.
+      - article [ref=e477]:
+        - generic [ref=e478]:
+          - heading "Build Footman" [level=4] [ref=e479]
+          - generic [ref=e480]: F
+        - paragraph [ref=e481]: Basic frontline infantry. Strong against early pressure and pairs with priest support.
+        - generic [ref=e482]:
+          - generic [ref=e483]: "135"
+          - generic [ref=e484]: "0"
+          - generic [ref=e485]: "2"
+    - generic [ref=e487]:
+      - heading "PortraitFrame" [level=3] [ref=e488]
+      - paragraph [ref=e489]: A hero-tier avatar frame with live 3D portrait rendering. Because your users deserve better than a circle crop.
+      - generic [ref=e494]: 3D Hero Portrait (Human)
+    - generic [ref=e496]:
+      - heading "HealthBar / ManaBar / XPBar / Progress / Loading" [level=3] [ref=e497]
+      - paragraph [ref=e498]: Health, mana, XP, build, and fullscreen loading bars with animated drain, fill, and layered overlays.
+      - generic [ref=e499]:
+        - generic [ref=e500]:
+          - heading "Health Bar" [level=4] [ref=e501]
+          - paragraph [ref=e502]: Green unit health bar from the in-game portrait panel with highlight and edge overlays.
+          - generic [ref=e503]:
+            - generic: 319 / 650
+          - generic [ref=e504]: Model-Style
+        - generic [ref=e505]:
+          - heading "Mana Bar" [level=4] [ref=e506]
+          - paragraph [ref=e507]: Blue mana bar sharing the same highlight and edge overlays as the health bar.
+          - generic [ref=e508]:
+            - generic: 174 / 300
+          - generic [ref=e509]: Model-Style
+        - generic [ref=e510]:
+          - heading "XP Bar" [level=4] [ref=e511]
+          - paragraph [ref=e512]: Hero experience bar with a purple fill and the classic XP border frame.
+          - generic [ref=e513]:
+            - generic: Level 3 · 42%
+          - generic [ref=e514]: Hero XP
+        - generic [ref=e515]:
+          - heading "Progress Bar" [level=4] [ref=e516]
+          - paragraph [ref=e517]: Generic timed progress indicator for training, upgrades, and other queued actions.
+          - generic [ref=e518]:
+            - generic: 75%
+          - generic [ref=e519]: Timer
+        - generic [ref=e520]:
+          - heading "Build Progress" [level=4] [ref=e521]
+          - paragraph [ref=e522]: Construction progress indicator with its own fill and border textures.
+          - generic [ref=e523]:
+            - generic: 8%
+          - generic [ref=e524]: Build Time
+        - generic [ref=e525]:
+          - heading "Loading Screen Bar" [level=4] [ref=e526]
+          - paragraph [ref=e527]: Full-width loading bar from the map load screen with a tiled track, glass border, and progress glow.
+          - generic [ref=e529]:
+            - generic: 81%
+          - generic [ref=e533]: Model layering and geometry
+    - generic [ref=e536]:
+      - heading "Border Textures" [level=2] [ref=e537]
+      - paragraph [ref=e538]: All 8 border BLP textures across 2 categories. These 9-slice atlases, bar borders, and panel borders define the chrome around every UI element.
+      - generic [ref=e539]: Decoding border textures…
+    - generic [ref=e541]:
+      - heading "Design Tokens" [level=3] [ref=e542]
+      - paragraph [ref=e543]: 60+ design tokens per faction. Stone textures, gold gradients, border filigree — all overridable. Your brand guidelines say blue and white? We can work with that. But why would you.
+      - generic [ref=e544]:
+        - generic [ref=e545]:
+          - generic [ref=e547]: Human
+          - generic [ref=e548]: Orc
+          - generic [ref=e549]: Night Elf
+          - generic [ref=e550]: Undead
+        - generic [ref=e551]:
+          - generic [ref=e552]: Background
+          - generic [ref=e554]: "#2A2A3A"
+          - generic [ref=e556]: "#2A1F1A"
+          - generic [ref=e558]: "#1A2A2A"
+          - generic [ref=e560]: "#1A1A2A"
+        - generic [ref=e561]:
+          - generic [ref=e562]: Text
+          - generic [ref=e564]: "#ECEFF7"
+          - generic [ref=e566]: "#F0E0C0"
+          - generic [ref=e568]: "#D0E8E0"
+          - generic [ref=e570]: "#C8C0D0"
+        - generic [ref=e571]:
+          - generic [ref=e572]: Accent
+          - generic [ref=e574]: "#4A7ABF"
+          - generic [ref=e576]: "#BF4A4A"
+          - generic [ref=e578]: "#4ABFAA"
+          - generic [ref=e580]: "#6A4ABF"
+        - generic [ref=e581]:
+          - generic [ref=e582]: Glow
+          - generic [ref=e584]: "#6DB3F2"
+          - generic [ref=e586]: "#FF6644"
+          - generic [ref=e588]: "#44FFCC"
+          - generic [ref=e590]: "#8866FF"
+      - paragraph [ref=e591]:
+        - emphasis [ref=e592]: "\"We extracted every pixel from the original UI. Twice.\""
+    - generic [ref=e594]:
+      - heading "Forged for everyone." [level=3] [ref=e595]
+      - paragraph [ref=e596]: All components meet WCAG 2.1 AA contrast ratios — even the Undead theme. Full keyboard navigation, screen reader labels, and reduced-motion support are built in, not bolted on.
+      - generic [ref=e597]:
+        - generic [ref=e598]:
+          - generic [ref=e599]: ✓
+          - text: Keyboard navigable
+        - generic [ref=e600]:
+          - generic [ref=e601]: ✓
+          - text: ARIA labels
+        - generic [ref=e602]:
+          - generic [ref=e603]: ✓
+          - text: Reduced motion
+        - generic [ref=e604]:
+          - generic [ref=e605]: ✓
+          - text: Colour contrast AA
+        - generic [ref=e606]:
+          - generic [ref=e607]: ✓
+          - text: Focus-visible rings (faction-styled, of course)
+    - generic [ref=e609]:
+      - heading "Leaner than a Blademaster with Wind Walk." [level=3] [ref=e610]
+      - paragraph [ref=e611]: Tree-shakeable ESM. Import only what you need. Average component weighs under 1.4kb gzipped.
+      - generic [ref=e612]:
+        - generic [ref=e613]:
+          - generic [ref=e614]: GoldButton
+          - generic [ref=e616]: 1.2kb
+        - generic [ref=e617]:
+          - generic [ref=e618]: ResourceCounter
+          - generic [ref=e620]: 0.8kb
+        - generic [ref=e621]:
+          - generic [ref=e622]: CommandCard
+          - generic [ref=e624]: 1.9kb
+        - generic [ref=e625]:
+          - generic [ref=e626]: Tooltip
+          - generic [ref=e628]: 1.4kb
+        - generic [ref=e629]:
+          - generic [ref=e630]: PortraitFrame
+          - generic [ref=e632]: 1.1kb
+        - generic [ref=e633]:
+          - generic [ref=e634]: HealthBar
+          - generic [ref=e636]: 0.6kb
+        - generic [ref=e637]:
+          - generic [ref=e638]: Minimap
+          - generic [ref=e640]: 2.1kb
+        - generic [ref=e641]:
+          - generic [ref=e642]: Dialog
+          - generic [ref=e644]: 1.7kb
+        - generic [ref=e645]:
+          - generic [ref=e646]: ChatBubble
+          - generic [ref=e648]: 0.9kb
+        - generic [ref=e649]:
+          - generic [ref=e650]: HeroCard
+          - generic [ref=e652]: 2.4kb
+    - generic [ref=e654]:
+      - heading "FAQ" [level=3] [ref=e655]
+      - generic [ref=e656]:
+        - generic [ref=e657]:
+          - heading "Is this an official Blizzard product?" [level=4] [ref=e658]
+          - paragraph [ref=e659]: No. This is an independent open-source project. Blizzard Entertainment has no affiliation. All visual assets are recreated from scratch.
+        - generic [ref=e660]:
+          - heading "Does it work with Tailwind?" [level=4] [ref=e661]
+          - paragraph [ref=e662]: Yes. WC3UI uses CSS custom properties internally. Tailwind utility classes compose cleanly alongside faction themes.
+        - generic [ref=e663]:
+          - heading "Can I use it in production?" [level=4] [ref=e664]
+          - paragraph [ref=e665]: We've been in beta since the Reign of Chaos launch. So, technically, it's battle-tested.
+        - generic [ref=e666]:
+          - heading "Why is there no Blood Elf theme?" [level=4] [ref=e667]
+          - paragraph [ref=e668]: "That's a TBC problem. We're tracking it in issue #247."
+    - contentinfo [ref=e670]:
+      - generic [ref=e671]:
+        - paragraph [ref=e672]:
+          - text: WC3UI is open source under MIT ·
+          - link "GitHub" [ref=e673]:
+            - /url: "#"
+          - text: ·
+          - link "Discord" [ref=e674]:
+            - /url: "#"
+          - text: ·
+          - link "Changelog" [ref=e675]:
+            - /url: "#"
+        - paragraph [ref=e676]:
+          - emphasis [ref=e677]: "\"My life for Aiur!\""
+          - text: — wait, wrong game.
+        - paragraph [ref=e678]: banteg 2026
