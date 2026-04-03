@@ -4,6 +4,7 @@ import {
   loadDataUrlImage,
   drawTemplateNineSliceToCanvas,
 } from "../../utils/glueButton";
+import "./style.css";
 
 const BLP = {
   bg: "./buttons/scrollbar/GlueScreen-Scrollbar-BackdropBackground.blp",

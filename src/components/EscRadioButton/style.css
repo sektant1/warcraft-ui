@@ -1,0 +1,31 @@
+.wc-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+
+.wc-radio-visual {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.wc-radio-label {
+  font-family: "Friz Quadrata", serif;
+  font-size: 14px;
+  color: var(--wc3-gold, #fcd312);
+  text-shadow: 1px 1px 2px #000;
+}
+
+.wc-radio:hover .wc-radio-label {
+  color: #fff;
+}
+
+.wc-radio:focus-visible {
+  outline: 1px solid var(--wc3-gold, #fcd312);
+  outline-offset: 2px;
+}

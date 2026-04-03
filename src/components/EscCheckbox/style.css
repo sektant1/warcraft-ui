@@ -1,0 +1,31 @@
+.wc-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+}
+
+.wc-checkbox-visual {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.wc-checkbox-label {
+  font-family: "Friz Quadrata", serif;
+  font-size: 14px;
+  color: var(--wc3-gold, #fcd312);
+  text-shadow: 1px 1px 2px #000;
+}
+
+.wc-checkbox:hover .wc-checkbox-label {
+  color: #fff;
+}
+
+.wc-checkbox:focus-visible {
+  outline: 1px solid var(--wc3-gold, #fcd312);
+  outline-offset: 2px;
+}

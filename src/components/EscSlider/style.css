@@ -1,0 +1,21 @@
+.wc-slider-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wc-slider-label {
+  font-family: "Friz Quadrata", serif;
+  font-size: 14px;
+  color: var(--wc3-gold, #fcd312);
+  text-shadow: 1px 1px 2px #000;
+  white-space: nowrap;
+  min-width: 6ch;
+}
+
+.wc-slider {
+  flex: 1;
+  height: 28px;
+  cursor: pointer;
+  touch-action: none;
+}

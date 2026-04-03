@@ -66,9 +66,9 @@ export interface RaceTextures {
 
 export function raceTexturePaths(race: Race): Record<string, string> {
   const rp = RACE_PREFIXES[race];
-  const c = `war3/Console/${race}/`;
-  const e = `war3/Widgets/EscMenu/${race}/`;
-  const eH = `war3/Widgets/EscMenu/Human/`;
+  const c = `console/${race}/`;
+  const esc = `buttons/esc/${rp.esc}/`;
+  const escH = `buttons/esc/human/`;
 
   return {
     topTile1: c + rp.tile + "UITile01.png",
@@ -81,67 +81,60 @@ export function raceTexturePaths(race: Race): Record<string, string> {
     hudTile2: c + rp.tile + "UITile02.png",
     hudTile3: c + rp.tile + "UITile03.png",
     hudTile4: c + rp.tile + "UITile04.png",
-    upperBtn: `war3/Widgets/Console/${race}/${rp.lower}-console-buttonstates2.png`,
-    gold: "war3/Feedback/Resources/ResourceGold.png",
-    lumber: "war3/Feedback/Resources/ResourceLumber.png",
-    supply: `war3/Feedback/Resources/Resource${race}.png`,
+    upperBtn: `console-buttons/${rp.lower}-console-buttonstates2.blp`,
+    gold: "resources/ResourceGold.blp",
+    lumber: "resources/ResourceLumber.blp",
+    supply: `resources/Resource${race}.blp`,
     escBtnBg:
       race === "Human"
-        ? eH + "human-options-menu-background.png"
-        : e + rp.esc + "-options-button-background.png",
-    escBtnBorder: eH + "human-options-button-border-up.png",
-    escBtnHighlight: e + rp.esc + "-options-button-highlight.png",
-    escMenuBg: e + rp.esc + "-options-menu-background.png",
-    escMenuBorder: e + rp.esc + "-options-menu-border.png",
-    cbBg: eH + "checkbox-background.png",
-    cbCheck:
-      race === "Human"
-        ? eH + "checkbox-check.png"
-        : race === "Undead"
-          ? "war3/Widgets/EscMenu/Undead/undead-checkbox-check.png"
-          : "war3/Widgets/Glues/GlueScreen-Checkbox-Check.png",
+        ? escH + "human-options-menu-background.blp"
+        : esc + rp.esc + "-options-button-background.blp",
+    escBtnBorder: escH + "human-options-button-border-up.blp",
+    escBtnHighlight: esc + rp.esc + "-options-button-highlight.blp",
+    escMenuBg: esc + rp.esc + "-options-menu-background.blp",
+    escMenuBorder: esc + rp.esc + "-options-menu-border.blp",
+    cbBg: "buttons/checkbox/checkbox-background.blp",
+    cbCheck: "buttons/checkbox/checkbox-check.blp",
     cbDepressed:
       race === "Human"
-        ? eH + "checkbox-depressed.png"
-        : e + rp.esc + "-checkbox-depressed.png",
-    rbBg: eH + "radiobutton-background.png",
-    rbDot: eH + "radiobutton-button.png",
-    sliderBg: eH + "slider-background.png",
-    sliderBorder: eH + "slider-border.png",
+        ? "buttons/checkbox/checkbox-depressed.blp"
+        : `buttons/checkbox/${rp.esc}-checkbox-depressed.blp`,
+    rbBg: "buttons/radio/radiobutton-background.blp",
+    rbDot: "buttons/radio/radiobutton-button.blp",
+    sliderBg: "buttons/slider/slider-background.blp",
+    sliderBorder: "buttons/slider/slider-border.blp",
     sliderKnob:
       race === "Human"
-        ? eH + "slider-knob.png"
-        : e + rp.esc + "-slider-knob.png",
-    ebBg: eH + "editbox-background.png",
-    ebBorder: eH + "editbox-border.png",
-    tooltipBg: "war3/Widgets/ToolTips/Human/human-tooltip-background.png",
-    healthFill: `war3/Feedback/HPBarConsole/${rp.lower}-healthbar-fill.png`,
-    manaFill: `war3/Feedback/ManaBarConsole/${rp.lower}-manabar-fill.png`,
-    xpFill: `war3/Feedback/XpBar/${rp.lower}-bigbar-fill.png`,
-    xpBorder: `war3/Feedback/XpBar/${rp.lower}-xpbar-border.png`,
-    buildFill: `war3/Feedback/BuildProgressBar/${rp.lower}-buildprogressbar-fill.png`,
-    buildBorder: `war3/Feedback/BuildProgressBar/${rp.lower}-buildprogressbar-border.png`,
-    loadBg: "war3/Glues/Loading/LoadBar/Loading-BarBackground.png",
-    loadFill: "war3/Glues/Loading/LoadBar/Loading-BarFill.png",
-    loadBorder: "war3/Glues/Loading/LoadBar/Loading-BarBorder.png",
-    loadGlass: "war3/Glues/Loading/LoadBar/Loading-BarGlass.png",
-    glueBg: "war3/Widgets/Glues/GlueScreen-Button1-BackdropBackground.png",
-    glueBorder: "war3/Widgets/Glues/GlueScreen-Button1-BackdropBorder.png",
-    glueBgDown:
-      "war3/Widgets/Glues/GlueScreen-Button1-BackdropBackground-Down.png",
-    glueBorderDown:
-      "war3/Widgets/Glues/GlueScreen-Button1-BackdropBorder-Down.png",
+        ? "buttons/slider/slider-knob.blp"
+        : `buttons/slider/${rp.esc}-slider-knob.blp`,
+    ebBg: "buttons/editbox/bnet-inputbox-back.blp",
+    ebBorder: "buttons/editbox/bnet-inputbox-border.blp",
+    tooltipBg: "tooltips/human-tooltip-background.blp",
+    healthFill: `bars/${rp.lower}-healthbar-fill.blp`,
+    manaFill: `bars/${rp.lower}-manabar-fill.blp`,
+    xpFill: `bars/${rp.lower}-bigbar-fill.blp`,
+    xpBorder: `bars/${rp.lower}-xpbar-border.blp`,
+    buildFill: `bars/${rp.lower}-buildprogressbar-fill.blp`,
+    buildBorder: `bars/${rp.lower}-buildprogressbar-border.blp`,
+    loadBg: "loading/Loading-BarBackground.blp",
+    loadFill: "loading/Loading-BarFill.blp",
+    loadBorder: "loading/Loading-BarBorder.blp",
+    loadGlass: "loading/Loading-BarGlass.blp",
+    glueBg: "buttons/glue/GlueScreen-Button1-BackdropBackground.blp",
+    glueBorder: "buttons/glue/GlueScreen-Button1-BackdropBorder.blp",
+    glueBgDown: "buttons/glue/GlueScreen-Button1-BackdropBackground-Down.blp",
+    glueBorderDown: "buttons/glue/GlueScreen-Button1-BackdropBorder-Down.blp",
     glueBgDisabled:
-      "war3/Widgets/Glues/GlueScreen-Button1-BackdropBackground-Disabled.png",
+      "buttons/glue/GlueScreen-Button1-BackdropBackground-Disabled.blp",
     glueBorderDisabled:
-      "war3/Widgets/Glues/GlueScreen-Button1-BackdropBorder-Disabled.png",
-    glueHighlight: "war3/Widgets/BattleNet/bnet-button01-highlight-mouse.png",
+      "buttons/glue/GlueScreen-Button1-BackdropBorder-Disabled.blp",
+    glueHighlight: "buttons/glue/bnet-button01-highlight-mouse.blp",
     glueBorderedBorder:
-      "war3/Widgets/Glues/GlueScreen-Button1-BorderedBackdropBorder.png",
+      "buttons/glue/GlueScreen-Button1-BorderedBackdropBorder.blp",
     glueBorderedBorderDown:
-      "war3/Widgets/Glues/GlueScreen-Button1-BorderedBackdropBorder-Down.png",
-    glueMenuFrame: "war3/Widgets/Glues/GlueScreen-Button1-Border.png",
-    cursor: `war3/Cursor/${race}Cursor.png`,
+      "buttons/glue/GlueScreen-Button1-BorderedBackdropBorder-Down.blp",
+    glueMenuFrame: "buttons/glue/GlueScreen-Button1-Border.blp",
+    cursor: `cursor/${race}Cursor.blp`,
   };
 }
 

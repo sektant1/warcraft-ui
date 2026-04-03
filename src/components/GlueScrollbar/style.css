@@ -1,0 +1,65 @@
+.glue-scrollbar-demo {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.glue-scroll-arrow {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.glue-scroll-arrow img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.glue-scroll-track {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.glue-scroll-track-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.glue-scroll-thumb {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 16px;
+  height: 16px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+  image-rendering: pixelated;
+}
+
+.glue-scroll-track input[type="range"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  margin: 0;
+  -webkit-appearance: none;
+}

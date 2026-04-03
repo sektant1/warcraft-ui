@@ -1,0 +1,36 @@
+.wc-resources {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.wc-resource-slot {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wc-resource-icon {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+}
+
+.wc-res-value {
+  font-family: "Friz Quadrata", serif;
+  color: var(--wc3-gold, #fcd312);
+  font-size: 14px;
+  min-width: 2.5ch;
+  text-align: right;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.wc-upkeep-text {
+  font-family: "Friz Quadrata", serif;
+  font-size: 12px;
+  text-shadow: 1px 1px 2px #000;
+}
+
+.wc-upkeep-green {
+  color: #00c000;
+}
