@@ -1,40 +1,68 @@
-import { useEffect, useRef, useState } from "react";
-import { useRenderer } from "../../context/RendererContext";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useBlpTextures, useCanvasRenderer } from "../../utils/blpLoader";
+import { useCurrentRace, RACE_PREFIXES } from "../../state/race";
 import "./style.css";
 
 interface Props {
   label?: string;
   value?: number;
   onChange?: (value: number) => void;
-  /** Default: 0.5 */
   defaultValue?: number;
 }
 
-export default function EscSlider({ label, value: controlled, onChange, defaultValue = 0.5 }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
-  const renderer = useRenderer();
+export default function EscSlider({
+  label,
+  value: controlled,
+  onChange,
+  defaultValue = 0.5,
+}: Props) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
   const [internal, setInternal] = useState(controlled ?? defaultValue);
   const dragging = useRef(false);
+  const race = useCurrentRace();
+  const rp = RACE_PREFIXES[race];
 
   const isControlled = controlled !== undefined;
   const value = isControlled ? controlled : internal;
-  const valueRef = useRef(value);
-  valueRef.current = value;
+
+  const knobPath =
+    race === "Human"
+      ? "buttons/slider/slider-knob.blp"
+      : `buttons/slider/${rp.esc}-slider-knob.blp`;
+
+  const tex = useBlpTextures({
+    bg: "buttons/slider/slider-background.blp",
+    border: "buttons/slider/slider-border.blp",
+    knob: knobPath,
+  });
+
+  const draw = useCallback(
+    (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+      if (!tex) return;
+      ctx.drawImage(tex.bg, 0, 0, w, h);
+      ctx.drawImage(tex.border, 0, 0, w, h);
+      const knobW = 20,
+        knobH = 28;
+      const knobX = value * w - knobW / 2;
+      const knobY = h / 2 - knobH / 2;
+      ctx.drawImage(tex.knob, knobX, knobY, knobW, knobH);
+    },
+    [tex, value],
+  );
+
+  useCanvasRenderer(canvasRef, draw, [tex, value]);
 
   useEffect(() => {
-    renderer.sliders.push({
-      ref: () => ref.current!,
-      value: () => valueRef.current,
-    });
-  }, []);
-
-  useEffect(() => {
-    const el = ref.current;
+    const el = wrapRef.current;
     if (!el) return;
 
     const updateFromEvent = (clientX: number) => {
       const rect = el.getBoundingClientRect();
-      const next = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
+      const next = Math.max(
+        0,
+        Math.min(1, (clientX - rect.left) / rect.width),
+      );
       if (!isControlled) setInternal(next);
       onChange?.(next);
     };
@@ -80,7 +108,12 @@ export default function EscSlider({ label, value: controlled, onChange, defaultV
   return (
     <div className="wc-slider-row">
       {label && <span className="wc-slider-label">{label}</span>}
-      <div ref={ref} className="wc-slider" />
+      <div ref={wrapRef} className="wc-slider">
+        <canvas
+          ref={canvasRef}
+          style={{ width: "100%", height: "100%", display: "block" }}
+        />
+      </div>
     </div>
   );
 }

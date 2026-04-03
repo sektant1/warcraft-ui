@@ -3,7 +3,7 @@ import "../src/index.css";
 // Config
 export { setAssetsBaseUrl } from "../src/utils/config";
 
-// Context / Provider (optional — components work without it via singleton)
+// Context / Provider (deprecated — components are now self-contained)
 export { WarcraftRenderer, useRenderer } from "../src/context/RendererContext";
 
 // Types

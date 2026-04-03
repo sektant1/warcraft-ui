@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { useRenderer } from "../../context/RendererContext";
+import { useCallback, useRef } from "react";
+import { useBlpTextures, useCanvasRenderer } from "../../utils/blpLoader";
 import "./style.css";
 
 interface Props {
@@ -9,25 +9,43 @@ interface Props {
 }
 
 export default function EscEditBox({ value, placeholder, onChange }: Props) {
-  const outerRef = useRef<HTMLLabelElement>(null);
-  const renderer = useRenderer();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    const reg = { ref: () => outerRef.current! };
-    renderer.editBoxes.push(reg);
-    return () => {
-      const idx = renderer.editBoxes.indexOf(reg);
-      if (idx >= 0) renderer.editBoxes.splice(idx, 1);
-    };
-  }, [renderer]);
+  const tex = useBlpTextures({
+    bg: "borders/esc/editbox-background.blp",
+    border: "borders/esc/editbox-border.blp",
+  });
+
+  const draw = useCallback(
+    (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+      if (!tex) return;
+      ctx.drawImage(tex.bg, 0, 0, w, h);
+      ctx.drawImage(tex.border, 0, 0, w, h);
+    },
+    [tex],
+  );
+
+  useCanvasRenderer(canvasRef, draw, [tex]);
 
   return (
-    <label ref={outerRef} className="wc3-editbox wc3-editbox--esc">
+    <label className="wc3-editbox wc3-editbox--esc">
+      <canvas
+        ref={canvasRef}
+        className="wc3-editbox-canvas"
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+          pointerEvents: "none",
+        }}
+      />
       <input
         type="text"
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.currentTarget.value)}
+        style={{ position: "relative", zIndex: 1 }}
       />
     </label>
   );

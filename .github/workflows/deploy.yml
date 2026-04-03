@@ -28,11 +28,11 @@ jobs:
         run: npm ci
 
       - name: Build demo
-        run: npx vite build --base /warcraft-ui/ --outDir dist-demo
+        run: npm run build:demo
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist-demo
+          path: demo
 
   deploy:
     needs: build

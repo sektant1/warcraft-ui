@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-import { useRenderer } from "../../context/RendererContext";
+import { useCallback, useRef, useState } from "react";
+import { useBlpTextures, useCanvasRenderer } from "../../utils/blpLoader";
+import { useCurrentRace, RACE_PREFIXES } from "../../state/race";
 import "./style.css";
 
 interface Props {
@@ -9,33 +10,46 @@ interface Props {
   onChange?: (checked: boolean) => void;
 }
 
-export default function EscCheckbox({ label, checked: controlledChecked, disabled = false, onChange }: Props) {
-  const outerRef = useRef<HTMLDivElement>(null);
-  const visualRef = useRef<HTMLSpanElement>(null);
-  const renderer = useRenderer();
-  const [internalChecked, setInternalChecked] = useState(controlledChecked ?? false);
+export default function EscCheckbox({
+  label,
+  checked: controlledChecked,
+  disabled = false,
+  onChange,
+}: Props) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [internalChecked, setInternalChecked] = useState(
+    controlledChecked ?? false,
+  );
+  const race = useCurrentRace();
+  const rp = RACE_PREFIXES[race];
 
   const isControlled = controlledChecked !== undefined;
   const checked = isControlled ? controlledChecked : internalChecked;
 
-  const checkedRef = useRef(checked);
-  checkedRef.current = checked;
-  const disabledRef = useRef(disabled);
-  disabledRef.current = disabled;
+  const depressedPath =
+    race === "Human"
+      ? "buttons/checkbox/checkbox-depressed.blp"
+      : `buttons/checkbox/${rp.esc}-checkbox-depressed.blp`;
 
-  useEffect(() => {
-    const reg = {
-      ref: () => outerRef.current!,
-      visualRef: () => visualRef.current!,
-      checked: () => checkedRef.current,
-      disabled: () => disabledRef.current,
-    };
-    renderer.checkboxes.push(reg);
-    return () => {
-      const idx = renderer.checkboxes.indexOf(reg);
-      if (idx >= 0) renderer.checkboxes.splice(idx, 1);
-    };
-  }, [renderer]);
+  const tex = useBlpTextures({
+    bg: "buttons/checkbox/checkbox-background.blp",
+    check: "buttons/checkbox/checkbox-check.blp",
+    depressed: depressedPath,
+  });
+
+  const draw = useCallback(
+    (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+      if (!tex) return;
+      const src = disabled ? tex.depressed : tex.bg;
+      ctx.drawImage(src, 0, 0, w, h);
+      if (checked) {
+        ctx.drawImage(tex.check, 0, 0, w, h);
+      }
+    },
+    [tex, checked, disabled],
+  );
+
+  useCanvasRenderer(canvasRef, draw, [tex, checked, disabled]);
 
   const toggle = () => {
     if (disabled) return;
@@ -51,7 +65,6 @@ export default function EscCheckbox({ label, checked: controlledChecked, disable
 
   return (
     <div
-      ref={outerRef}
       className={`wc-checkbox${checked ? " wc-checkbox--checked" : ""}${disabled ? " wc-checkbox--disabled" : ""}`}
       role="checkbox"
       aria-checked={checked}
@@ -60,7 +73,7 @@ export default function EscCheckbox({ label, checked: controlledChecked, disable
       onClick={toggle}
       onKeyDown={(e) => e.key === " " && toggle()}
     >
-      <span ref={visualRef} className="wc-checkbox-visual" />
+      <canvas ref={canvasRef} className="wc-checkbox-visual" />
       <span className="wc-checkbox-label">{label}</span>
     </div>
   );

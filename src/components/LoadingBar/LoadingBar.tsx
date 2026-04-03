@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { useRenderer } from "../../context/RendererContext";
+import { useCallback, useRef } from "react";
+import { useBlpTextures, useCanvasRenderer } from "../../utils/blpLoader";
 import "./style.css";
 
 interface Props {
@@ -7,35 +7,65 @@ interface Props {
 }
 
 export default function LoadingBar({ progress }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
-  const fillRef = useRef<HTMLDivElement>(null);
-  const renderer = useRenderer();
-  const progressRef = useRef(progress);
-  progressRef.current = progress;
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    const reg = {
-      ref: () => ref.current!,
-      fillRef: () => fillRef.current!,
-      fillPercent: () => Math.min(progressRef.current, 98),
-    };
-    renderer.loadingBars.push(reg);
-    return () => {
-      const idx = renderer.loadingBars.indexOf(reg);
-      if (idx >= 0) renderer.loadingBars.splice(idx, 1);
-    };
-  }, [renderer]);
+  const tex = useBlpTextures({
+    bg: "loading/Loading-BarBackground.blp",
+    fill: "loading/Loading-BarFill.blp",
+    border: "loading/Loading-BarBorder.blp",
+    glass: "loading/Loading-BarGlass.blp",
+  });
+
+  const pct = Math.min(progress, 98);
+
+  const draw = useCallback(
+    (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+      if (!tex) return;
+
+      // Background
+      ctx.drawImage(tex.bg, 0, 0, w, h);
+
+      // Tiled fill
+      const fillPx = ((w - 8) * pct) / 100;
+      if (fillPx > 0) {
+        const pattern = ctx.createPattern(tex.fill, "repeat");
+        if (pattern) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.rect(4, 4, fillPx, h - 8);
+          ctx.clip();
+          ctx.fillStyle = pattern;
+          ctx.fillRect(4, 4, fillPx, h - 8);
+          ctx.restore();
+        }
+      }
+
+      // Border
+      ctx.drawImage(tex.border, 0, 0, w, h);
+
+      // Glass overlay (additive blend)
+      ctx.save();
+      ctx.globalCompositeOperation = "lighter";
+      ctx.globalAlpha = 0.6;
+      ctx.drawImage(tex.glass, 0, 0, w, h);
+      ctx.restore();
+    },
+    [tex, pct],
+  );
+
+  useCanvasRenderer(canvasRef, draw, [tex, pct]);
 
   return (
-    <div ref={ref} className="wc-loading-bar">
-      <div className="wc-lb-bg" />
-      <div
-        ref={fillRef}
-        className="wc-lb-fill"
-        style={{ width: Math.min(progress, 98) + "%" }}
+    <div className="wc-loading-bar">
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          inset: 0,
+          width: "100%",
+          height: "100%",
+        }}
       />
-      <img className="wc-lb-border" src="" alt="" />
-      <img className="wc-lb-glass" src="" alt="" />
       <div className="wc-lb-text">{Math.floor(progress)}%</div>
     </div>
   );

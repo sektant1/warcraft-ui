@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { useRenderer } from "../../context/RendererContext";
+import { useCallback, useRef } from "react";
+import { useBlpTextures, useCanvasRenderer } from "../../utils/blpLoader";
 import "./style.css";
 
 interface Props {
@@ -9,23 +9,28 @@ interface Props {
 }
 
 export default function EscRadioButton({ label, selected, onSelect }: Props) {
-  const outerRef = useRef<HTMLDivElement>(null);
-  const visualRef = useRef<HTMLSpanElement>(null);
-  const selectedRef = useRef(selected);
-  selectedRef.current = selected;
-  const renderer = useRenderer();
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  useEffect(() => {
-    renderer.radios.push({
-      ref: () => outerRef.current!,
-      visualRef: () => visualRef.current!,
-      selected: () => selectedRef.current,
-    });
-  }, []);
+  const tex = useBlpTextures({
+    bg: "buttons/radio/radiobutton-background.blp",
+    dot: "buttons/radio/radiobutton-button.blp",
+  });
+
+  const draw = useCallback(
+    (ctx: CanvasRenderingContext2D, w: number, h: number) => {
+      if (!tex) return;
+      ctx.drawImage(tex.bg, 0, 0, w, h);
+      if (selected) {
+        ctx.drawImage(tex.dot, 0, 0, w, h);
+      }
+    },
+    [tex, selected],
+  );
+
+  useCanvasRenderer(canvasRef, draw, [tex, selected]);
 
   return (
     <div
-      ref={outerRef}
       className={`wc-radio${selected ? " wc-radio--selected" : ""}`}
       role="radio"
       aria-checked={selected}
@@ -33,7 +38,7 @@ export default function EscRadioButton({ label, selected, onSelect }: Props) {
       onClick={onSelect}
       onKeyDown={(e) => e.key === " " && onSelect()}
     >
-      <span ref={visualRef} className="wc-radio-visual" />
+      <canvas ref={canvasRef} className="wc-radio-visual" />
       <span className="wc-radio-label">{label}</span>
     </div>
   );

@@ -6,6 +6,12 @@ import { resolve } from "node:path";
 export default defineConfig({
   plugins: [react(), dts({ insertTypesEntry: true })],
   base: "/warcraft-ui/",
+  resolve: {
+    alias: {
+      "@sektant1/warcraft-ui/style.css": resolve(__dirname, "src/index.css"),
+      "@sektant1/warcraft-ui": resolve(__dirname, "lib/main.ts"),
+    },
+  },
   build: {
     lib: {
       entry: resolve(__dirname, "lib/main"),

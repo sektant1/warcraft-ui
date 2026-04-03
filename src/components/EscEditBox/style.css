@@ -1,0 +1,15 @@
+.wc3-editbox {
+  position: relative;
+  display: block;
+}
+
+.wc3-editbox input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: #f6f8ff;
+  font-family: "Friz Quadrata", serif;
+  font-size: 14px;
+  padding: 4px 8px;
+  outline: none;
+}
