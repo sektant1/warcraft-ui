@@ -1,7 +1,7 @@
 // Config
 export { setAssetsBaseUrl } from "../src/utils/config";
 
-// Context / Provider
+// Context / Provider (optional — components work without it via singleton)
 export { WarcraftRenderer, useRenderer } from "../src/context/RendererContext";
 
 // Types
@@ -31,7 +31,7 @@ export {
   handleCheatKey,
 } from "../src/state/resources";
 
-// Components — self-contained canvas
+// Components — self-contained canvas buttons
 export { default as GlueSmallButton } from "../src/components/GlueSmallButton/GlueSmallButton";
 export { default as GlueScreenButton } from "../src/components/GlueScreenButton/GlueScreenButton";
 export { default as GlueBorderedButton } from "../src/components/GlueBorderedButton/GlueBorderedButton";
@@ -39,8 +39,35 @@ export { default as GlueMenuButton } from "../src/components/GlueMenuButton/Glue
 export { default as GlueCampaignButton } from "../src/components/GlueCampaignButton/CampaignButton";
 export { default as GlueDropdown } from "../src/components/GlueDropdown/GlueDropdown";
 export { default as GlueScrollbar } from "../src/components/GlueScrollbar/GlueScrollbar";
-export { default as BnetEditBox } from "../src/components/BnetEditBox/BnetEditBox";
+export { default as GlueListBox } from "../src/components/GlueListBox/GlueListBox";
+
+// Components — ESC menu controls
+export { default as EscCheckbox } from "../src/components/EscCheckbox/EscCheckbox";
+export { default as EscRadioButton } from "../src/components/EscRadioButton/EscRadioButton";
+export { default as EscSlider } from "../src/components/EscSlider/EscSlider";
 export { default as EscEditBox } from "../src/components/EscEditBox/EscEditBox";
+export { default as EscOptionButton } from "../src/components/EscOptionButton/EscOptionButton";
+
+// Components — edit boxes
+export { default as BnetEditBox } from "../src/components/BnetEditBox/BnetEditBox";
+
+// Components — 3D models
 export { default as HeroPortraitModel } from "../src/components/HeroPortraitModel/HeroPortraitModel";
 export { default as ItemModel } from "../src/components/ItemModel/ItemModel";
+export { default as WorkerUnitModel } from "../src/components/WorkerUnitModel/WorkerUnitModel";
+export { default as TimeIndicatorModel } from "../src/components/TimeIndicatorModel/TimeIndicatorModel";
+
+// Components — HUD & display
 export { default as TopHudWebGL } from "../src/components/TopHudWebGL/TopHudWebGL";
+export { default as BottomHud } from "../src/components/BottomHud/BottomHud";
+export { default as ResourceCounter } from "../src/components/ResourceCounter/ResourceCounter";
+export { default as CursorOverlay } from "../src/components/CursorOverlay/CursorOverlay";
+
+// Components — bars & panels
+export { default as StatBar } from "../src/components/StatBar/StatBar";
+export { default as LoadingBar } from "../src/components/LoadingBar/LoadingBar";
+export { default as MenuPanel } from "../src/components/MenuPanel/MenuPanel";
+export { default as Tooltip } from "../src/components/Tooltip/Tooltip";
+
+// Components — gallery
+export { default as HeroGallery } from "../src/components/HeroGallery/HeroGallery";

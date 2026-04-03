@@ -1,0 +1,13 @@
+.wc-tooltip {
+  position: relative;
+  padding: 8px 10px;
+  color: #f6f8ff;
+  font-size: 0.82rem;
+  line-height: 1.35;
+  pointer-events: none;
+}
+
+.wc-tt-content {
+  position: relative;
+  z-index: 1;
+}

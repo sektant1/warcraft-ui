@@ -1,15 +1,6 @@
 import { useEffect, useRef } from "react";
-import {
-  loadBlpDataUrl,
-  loadDataUrlImage,
-  drawTemplateNineSliceToCanvas,
-} from "../../utils/glueButton";
-
-const BG_BLP = "./borders/esc/editbox-background.blp";
-const BORDER_BLP = "./borders/esc/editbox-border.blp";
-const CORNER_RATIO = 0.0125 / 0.04;
-const FILL_INSET_PX = 2;
-const FILL_CORNER_CAP_PX = 8;
+import { useRenderer } from "../../context/RendererContext";
+import "./style.css";
 
 interface Props {
   value: string;
@@ -18,39 +9,20 @@ interface Props {
 }
 
 export default function EscEditBox({ value, placeholder, onChange }: Props) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const outerRef = useRef<HTMLLabelElement>(null);
+  const renderer = useRenderer();
 
   useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    let cancelled = false;
-
-    void Promise.all([
-      loadBlpDataUrl(BG_BLP).then(loadDataUrlImage),
-      loadBlpDataUrl(BORDER_BLP).then(loadDataUrlImage),
-    ])
-      .then(([bgImg, borderImg]) => {
-        if (cancelled) return;
-        const h = canvas.clientHeight || 1;
-        drawTemplateNineSliceToCanvas(canvas, bgImg, borderImg, {
-          cornerPx: h * CORNER_RATIO,
-          insetPx: FILL_INSET_PX,
-          tileBackground: true,
-          tileHorizontalEdges: true,
-          opaqueBaseFill: "#000",
-          fillCornerMaxPx: FILL_CORNER_CAP_PX,
-        });
-      })
-      .catch((err) => console.error(err));
-
+    const reg = { ref: () => outerRef.current! };
+    renderer.editBoxes.push(reg);
     return () => {
-      cancelled = true;
+      const idx = renderer.editBoxes.indexOf(reg);
+      if (idx >= 0) renderer.editBoxes.splice(idx, 1);
     };
-  }, []);
+  }, [renderer]);
 
   return (
-    <label className="wc3-editbox wc3-editbox--esc">
-      <canvas ref={canvasRef} className="wc3-editbox-canvas" />
+    <label ref={outerRef} className="wc3-editbox wc3-editbox--esc">
       <input
         type="text"
         value={value}

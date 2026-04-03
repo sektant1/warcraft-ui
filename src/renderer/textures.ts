@@ -107,8 +107,8 @@ export function raceTexturePaths(race: Race): Record<string, string> {
       race === "Human"
         ? "buttons/slider/slider-knob.blp"
         : `buttons/slider/${rp.esc}-slider-knob.blp`,
-    ebBg: "buttons/editbox/bnet-inputbox-back.blp",
-    ebBorder: "buttons/editbox/bnet-inputbox-border.blp",
+    ebBg: "borders/esc/editbox-background.blp",
+    ebBorder: "borders/esc/editbox-border.blp",
     tooltipBg: "tooltips/human-tooltip-background.blp",
     healthFill: `bars/${rp.lower}-healthbar-fill.blp`,
     manaFill: `bars/${rp.lower}-manabar-fill.blp`,

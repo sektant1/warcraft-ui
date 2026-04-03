@@ -32,9 +32,29 @@ export const lumberTarget = lumberTargetStore.get;
 export const setGoldTarget = goldTargetStore.set;
 export const setLumberTarget = lumberTargetStore.set;
 
-// Hooks (subscribe in React components)
-export const useGoldCurrent = goldCurrentStore.useValue;
-export const useLumberCurrent = lumberCurrentStore.useValue;
+// Auto-start animation loops on first hook use
+let tickInterval: ReturnType<typeof setInterval> | null = null;
+let rafId = 0;
+
+function startLoops() {
+  if (tickInterval) return;
+  tickInterval = setInterval(tickResources, 1000);
+  const loop = () => {
+    animateCounters();
+    rafId = requestAnimationFrame(loop);
+  };
+  rafId = requestAnimationFrame(loop);
+}
+
+// Hooks (subscribe in React components) — auto-start animation loops on first use
+export const useGoldCurrent = () => {
+  startLoops();
+  return goldCurrentStore.useValue();
+};
+export const useLumberCurrent = () => {
+  startLoops();
+  return lumberCurrentStore.useValue();
+};
 export const useGoldTarget = goldTargetStore.useValue;
 export const useLumberTarget = lumberTargetStore.useValue;
 

@@ -1,0 +1,16 @@
+.wc-hud-bar {
+  display: flex;
+  width: 100%;
+  pointer-events: none;
+}
+
+.wc-hud-bar img {
+  display: block;
+  height: auto;
+  image-rendering: auto;
+}
+
+.wc-hud-tile-01 { width: 32vw; }
+.wc-hud-tile-02 { width: 10.875vw; }
+.wc-hud-tile-03 { width: 32vw; margin-left: auto; }
+.wc-hud-tile-04 { width: 4vw; }

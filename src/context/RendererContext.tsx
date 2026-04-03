@@ -1,14 +1,33 @@
 import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Renderer } from "../renderer/Renderer";
+import { acquireRenderer, releaseRenderer } from "../renderer/singleton";
 import type { Race } from "../utils/types";
 
 const RendererContext = createContext<Renderer | null>(null);
 
+/**
+ * Get the renderer instance.
+ * If inside a <WarcraftRenderer> provider, returns that instance.
+ * Otherwise, acquires the shared singleton renderer automatically.
+ */
 export function useRenderer() {
   const ctx = useContext(RendererContext);
-  if (!ctx)
-    throw new Error("useRenderer must be used inside <WarcraftProvider>");
-  return ctx;
+  const singletonRef = useRef<Renderer | null>(null);
+
+  if (!ctx && !singletonRef.current) {
+    singletonRef.current = acquireRenderer();
+  }
+
+  useEffect(() => {
+    if (!ctx && singletonRef.current) {
+      return () => {
+        releaseRenderer();
+        singletonRef.current = null;
+      };
+    }
+  }, [ctx]);
+
+  return ctx ?? singletonRef.current!;
 }
 
 interface Props {
@@ -16,6 +35,10 @@ interface Props {
   children: React.ReactNode;
 }
 
+/**
+ * Optional provider for explicit renderer control.
+ * Components work without this wrapper via the singleton renderer.
+ */
 export function WarcraftRenderer({ race, children }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const viewportRef = useRef<HTMLDivElement>(null);

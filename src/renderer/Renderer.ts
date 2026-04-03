@@ -16,6 +16,7 @@ export interface CheckboxReg {
   ref: () => HTMLElement;
   visualRef: () => HTMLElement;
   checked: () => boolean;
+  disabled: () => boolean;
 }
 
 export interface RadioReg {
@@ -74,6 +75,7 @@ export interface LoadingBarReg {
 
 export interface MenuPanelReg {
   ref: () => HTMLElement;
+  variant: "menu" | "cinematic";
 }
 
 export interface UpperButtonReg {
@@ -95,7 +97,6 @@ export class Renderer {
   blend = new BlendManager();
 
   raceTex!: RaceTextures;
-  private skyScrollTime = 0;
   private rafId = 0;
   private viewportRef: (() => HTMLElement) | null = null;
 
@@ -168,17 +169,6 @@ export class Renderer {
     blend.setBlend("BLEND");
     batcher.batchTex = null;
 
-    const vw = ctx.canvasW / 100;
-    const topHudH = 4 * vw;
-    const hudBarH =
-      parseFloat(
-        getComputedStyle(document.documentElement).getPropertyValue(
-          "--hud-height",
-        ),
-      ) || 240;
-
-    this.renderTopHud(vw, topHudH);
-    this.renderBottomHud(hudBarH);
     this.renderUpperButtons();
     this.renderResourceIcons();
 
@@ -202,83 +192,8 @@ export class Renderer {
     batcher.flush();
   }
 
-  private renderTopHud(vw: number, topHudH: number) {
-    const { ctx, batcher, blend, raceTex } = this;
-    const gl = ctx.gl;
-
-    const t1w = 32 * vw;
-    batcher.drawQuad(0, 0, t1w, topHudH, raceTex.topTile1, 0, 0, 1, 1);
-    const t2w = 10.875 * vw;
-    batcher.drawQuad(t1w, 0, t2w, topHudH, raceTex.topTile2, 0, 0, 0.34, 1);
-    const centerGap = ctx.canvasW - (32 + 10.875 + 6.625 + 32 + 4) * vw;
-    const rightStart = (32 + 10.875) * vw + centerGap;
-    const t3w = 6.625 * vw;
-    batcher.drawQuad(
-      rightStart,
-      0,
-      t3w,
-      topHudH,
-      raceTex.topTile2,
-      0.793,
-      0,
-      1,
-      1,
-    );
-    const t4w = 32 * vw;
-    batcher.drawQuad(
-      rightStart + t3w,
-      0,
-      t4w,
-      topHudH,
-      raceTex.topTile3,
-      0,
-      0,
-      1,
-      1,
-    );
-    const t5w = 4 * vw;
-    batcher.drawQuad(
-      rightStart + t3w + t4w,
-      0,
-      t5w,
-      topHudH,
-      raceTex.topTile4,
-      0,
-      0,
-      1,
-      1,
-    );
-
-    // Time indicator is rendered by the dedicated MDX clock component.
-  }
-
-  private renderBottomHud(hudBarH: number) {
-    const { ctx, batcher, raceTex } = this;
-    const y = ctx.canvasH - hudBarH;
-    const total = 1600;
-    const w1 = (512 / total) * ctx.canvasW;
-    const w2 = (512 / total) * ctx.canvasW;
-    const w3 = (512 / total) * ctx.canvasW;
-    const w4 = (64 / total) * ctx.canvasW;
-    batcher.drawQuad(0, y, w1, hudBarH, raceTex.hudTile1, 0, 0, 1, 1);
-    batcher.drawQuad(w1, y, w2, hudBarH, raceTex.hudTile2, 0, 0, 1, 1);
-    batcher.drawQuad(w1 + w2, y, w3, hudBarH, raceTex.hudTile3, 0, 0, 1, 1);
-    batcher.drawQuad(
-      w1 + w2 + w3,
-      y,
-      w4,
-      hudBarH,
-      raceTex.hudTile4,
-      0,
-      0,
-      1,
-      1,
-    );
-  }
-
   private renderUpperButtons() {
-    const { batcher, blend, ctx, raceTex } = this;
-    const gl = ctx.gl;
+    const { batcher, blend } = this;
 
     for (const btn of this.upperButtons) {
       const el = btn.ref();
@@ -561,12 +476,13 @@ export class Renderer {
       if (!vis) continue;
       const rect = vis.getBoundingClientRect();
       if (!this.isVisible(rect, vpRect)) continue;
+      const cbDisabled = cb.disabled();
       batcher.drawQuad(
         rect.left,
         rect.top,
         rect.width,
         rect.height,
-        raceTex.cbBg,
+        cbDisabled ? raceTex.cbDepressed : raceTex.cbBg,
         0,
         0,
         1,

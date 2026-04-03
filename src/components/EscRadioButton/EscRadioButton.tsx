@@ -11,13 +11,15 @@ interface Props {
 export default function EscRadioButton({ label, selected, onSelect }: Props) {
   const outerRef = useRef<HTMLDivElement>(null);
   const visualRef = useRef<HTMLSpanElement>(null);
+  const selectedRef = useRef(selected);
+  selectedRef.current = selected;
   const renderer = useRenderer();
 
   useEffect(() => {
     renderer.radios.push({
       ref: () => outerRef.current!,
       visualRef: () => visualRef.current!,
-      selected: () => selected,
+      selected: () => selectedRef.current,
     });
   }, []);
 

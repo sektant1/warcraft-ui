@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./App.css";
 import { useCurrentRace, setCurrentRace } from "./state/race";
-import { tickResources, animateCounters } from "./state/resources";
-import { WarcraftRenderer } from "./context/RendererContext";
 import CursorOverlay from "./components/CursorOverlay/CursorOverlay";
 import HeroPortraitModel from "./components/HeroPortraitModel/HeroPortraitModel";
 import WorkerUnitModel from "./components/WorkerUnitModel/WorkerUnitModel";
@@ -29,20 +27,6 @@ function App() {
   const [difficulty, setDifficulty] =
     useState<(typeof DIFFICULTY)[number]>("Normal");
   const [volume, setVolume] = useState(0.5);
-
-  useEffect(() => {
-    const tick = setInterval(tickResources, 1000);
-    let rafId: number;
-    const loop = () => {
-      animateCounters();
-      rafId = requestAnimationFrame(loop);
-    };
-    rafId = requestAnimationFrame(loop);
-    return () => {
-      clearInterval(tick);
-      cancelAnimationFrame(rafId);
-    };
-  }, []);
 
   return (
     <>
@@ -83,7 +67,7 @@ function App() {
           <WorkerUnitModel race={race} side="left" />
         </div>
 
-        {/* Controls panel */}
+        {/* Controls panel — no WarcraftRenderer wrapper needed */}
         <div
           style={{
             display: "flex",
@@ -92,57 +76,55 @@ function App() {
             width: 240,
           }}
         >
-          <WarcraftRenderer race={race}>
-            <ResourceCounter />
-            <BnetEditBox
-              value={bnetValue}
-              placeholder="Search..."
-              onChange={setBnetValue}
-            />
-            <EscEditBox
-              value={escValue}
-              placeholder="Player name..."
-              onChange={setEscValue}
-            />
-            <GlueListBox
-              items={[
-                "Human",
-                "Orc",
-                "NightElf",
-                "Undead",
-                "Naga",
-                "Demon",
-                "Creep",
-                "Critter",
-              ]}
-              value={listSelected}
-              onChange={setListSelected}
-              height={140}
-            />
-            <EscSlider label="Volume" value={volume} onChange={setVolume} />
-            <EscCheckbox
-              label="Show tips"
-              checked={tipsEnabled}
-              onChange={setTipsEnabled}
-            />
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {DIFFICULTY.map((d) => (
-                <EscRadioButton
-                  key={d}
-                  label={d}
-                  selected={difficulty === d}
-                  onSelect={() => setDifficulty(d)}
-                />
-              ))}
-            </div>
-            <EscOptionButton
-              onClick={() =>
-                alert(`Saved! Volume: ${Math.round(volume * 100)}%`)
-              }
-            >
-              Apply
-            </EscOptionButton>
-          </WarcraftRenderer>
+          <ResourceCounter />
+          <BnetEditBox
+            value={bnetValue}
+            placeholder="Search..."
+            onChange={setBnetValue}
+          />
+          <GlueListBox
+            items={[
+              "Human",
+              "Orc",
+              "NightElf",
+              "Undead",
+              "Naga",
+              "Demon",
+              "Creep",
+              "Critter",
+            ]}
+            value={listSelected}
+            onChange={setListSelected}
+            height={140}
+          />
+          <EscEditBox
+            value={escValue}
+            placeholder="Player name..."
+            onChange={setEscValue}
+          />
+          <EscSlider label="Volume" value={volume} onChange={setVolume} />
+          <EscCheckbox
+            label="Show tips"
+            checked={tipsEnabled}
+            onChange={setTipsEnabled}
+          />
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {DIFFICULTY.map((d) => (
+              <EscRadioButton
+                key={d}
+                label={d}
+                selected={difficulty === d}
+                onSelect={() => setDifficulty(d)}
+              />
+            ))}
+          </div>
+          <EscOptionButton
+            onClick={() =>
+              alert(`Saved! Volume: ${Math.round(volume * 100)}%`)
+            }
+          >
+            Apply
+          </EscOptionButton>
         </div>
       </div>
     </>

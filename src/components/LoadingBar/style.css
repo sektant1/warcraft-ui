@@ -1,0 +1,56 @@
+.wc-loading-bar {
+  position: relative;
+  width: min(100%, 640px);
+  aspect-ratio: 8.007 / 1;
+  height: auto;
+  max-height: 80px;
+  overflow: visible;
+}
+
+.wc-loading-bar .wc-lb-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+}
+
+.wc-loading-bar .wc-lb-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  transition: width 90ms linear;
+  will-change: width;
+}
+
+.wc-loading-bar .wc-lb-border,
+.wc-loading-bar .wc-lb-glass {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+.wc-loading-bar .wc-lb-border { z-index: 1; }
+.wc-loading-bar .wc-lb-glass { z-index: 2; opacity: 1; }
+
+.wc-loading-bar .wc-lb-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 5;
+  color: #f6f8ff;
+  font-size: 0.78rem;
+  line-height: 1;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.95);
+}
