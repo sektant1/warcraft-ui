@@ -399,6 +399,11 @@ function App() {
     <div className="wc3-scene">
       <CursorOverlay />
 
+      {/* Site logo */}
+      <div className="demo-site-logo">
+        <img src="/site-logo.png" alt="Warcraft III UI" />
+      </div>
+
       {/* Race selector */}
       <header className="demo-race-bar">
         {RACES.map((r: Race) => (
@@ -508,20 +513,20 @@ function App() {
         {/* ── Column 4: CommandCard, Bars, Panels ── */}
         <div className="demo-col">
           <SectionTitle title="Headings">
-            <Heading level={1}>Warcraft III</Heading>
+            <Heading level={1}>Heading 1</Heading>
             <Heading
               level={2}
               icon={<BlpIcon path="resources/ResourceGold.blp" size={20} />}
             >
-              Gold Mines
+              Heading 2
             </Heading>
             <Heading
               level={3}
               icon={<BlpIcon path="resources/ResourceLumber.blp" size={16} />}
             >
-              Lumber Mill
+              Heading 3
             </Heading>
-            <Heading level={4}>Supply Details</Heading>
+            <Heading level={4}>Heading 4</Heading>
           </SectionTitle>
 
           <SectionTitle title="Stat Bars">

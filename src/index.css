@@ -187,6 +187,20 @@ body * {
    DEMO LAYOUT
 ══════════════════════════════════════════════════════════════ */
 
+/* Site logo */
+.demo-site-logo {
+  display: flex;
+  justify-content: center;
+  padding: 24px 16px 0;
+}
+
+.demo-site-logo img {
+  max-width: 420px;
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 /* Race selector bar */
 .demo-race-bar {
   display: flex;
