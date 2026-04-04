@@ -1,21 +1,34 @@
 .menu-button-shell {
   position: relative;
+  width: 100%;
+  max-width: 290px;
+  aspect-ratio: 290 / 85;
+  align-self: flex-start;
 }
 
+/* Frame: natural 512x128 at 66.4% scale = 340x85.
+   Extends 50px left of shell → -50/290 = -17.24%
+   Width: 340/290 = 117.24% of shell */
 .menu-button-frame {
   position: absolute;
-  inset: -8px;
-  width: calc(100% + 16px);
-  height: calc(100% + 16px);
+  top: 0;
+  left: -17.24%;
+  width: 117.24%;
+  height: 100%;
   object-fit: fill;
   pointer-events: none;
   image-rendering: pixelated;
 }
 
+/* Button inner: 211x41 centered in 290x85 shell.
+   left=36/290=12.41%, top=21/85=24.71%
+   width=211/290=72.76%, height=41/85=48.24% */
 .menu-button-inner {
-  position: relative;
-  width: 180px;
-  height: 42px;
+  position: absolute;
+  left: 12.41%;
+  top: 24.71%;
+  width: 72.76%;
+  height: 48.24%;
   border: none;
   background: transparent;
   padding: 0;
@@ -23,7 +36,10 @@
 }
 
 .menu-button-inner--single {
-  width: 140px;
+  left: 16%;
+  top: 28%;
+  width: 68%;
+  height: 44%;
 }
 
 .menu-button-inner:disabled {

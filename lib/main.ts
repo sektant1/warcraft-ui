@@ -73,3 +73,12 @@ export { default as Tooltip } from "../src/components/Tooltip/Tooltip";
 
 // Components — gallery
 export { default as HeroGallery } from "../src/components/HeroGallery/HeroGallery";
+
+// Components — site
+export { default as AuthModal, AuthButton } from "../src/components/AuthModal/AuthModal";
+export { default as BlpIcon } from "../src/components/AuthModal/BlpIcon";
+export { default as SiteHeader } from "../src/components/SiteHeader/SiteHeader";
+
+// State — auth & page
+export { useAuth, login, logout, register } from "../src/state/auth";
+export { usePage, currentPage, setPage } from "../src/state/page";

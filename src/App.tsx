@@ -118,7 +118,7 @@ function App() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "auto 240px 240px 280px",
+          gridTemplateColumns: "auto 240px 300px 280px",
           gap: "24px 32px",
           padding: "16px 32px 40px",
           maxWidth: 1200,
@@ -214,7 +214,7 @@ function App() {
           </Section>
 
           <Section title="Menu Button">
-            <div style={{ display: "flex", gap: 12 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <GlueMenuButton onClick={() => alert("OK")}>OK</GlueMenuButton>
               <GlueMenuButton variant="single" onClick={() => alert("Cancel")}>
                 Cancel

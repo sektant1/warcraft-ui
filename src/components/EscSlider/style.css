@@ -18,4 +18,5 @@
   height: 28px;
   cursor: pointer;
   touch-action: none;
+  overflow: show;
 }
