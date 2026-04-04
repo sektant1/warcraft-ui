@@ -26,9 +26,7 @@ jobs:
 
       - name: Download assets from warcraft-ui-assets
         run: |
-          git clone https://x-access-token:${{ secrets.ASSETS_TOKEN }}@github.com/sektant1/warcraft-ui-assets.git _assets
-          cp -r _assets/. public/
-          rm -rf _assets
+          git clone https://x-access-token:${{ secrets.ASSETS_TOKEN }}@github.com/sektant1/warcraft-ui-assets.git public
 
       - name: Install dependencies
         run: npm ci
