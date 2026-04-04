@@ -1,34 +1,37 @@
 .wc-resources {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 14px;
 }
 
 .wc-resource-slot {
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
 }
 
 .wc-resource-icon {
   display: inline-block;
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
 }
 
 .wc-res-value {
   font-family: "Friz Quadrata", serif;
   color: var(--wc3-gold, #fcd312);
-  font-size: 14px;
-  min-width: 2.5ch;
+  font-size: 13px;
+  min-width: 3ch;
   text-align: right;
   text-shadow: 1px 1px 2px #000;
+  white-space: nowrap;
 }
 
 .wc-upkeep-text {
   font-family: "Friz Quadrata", serif;
-  font-size: 12px;
+  font-size: 11px;
   text-shadow: 1px 1px 2px #000;
+  margin-left: -6px;
 }
 
 .wc-upkeep-green {

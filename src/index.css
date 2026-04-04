@@ -23,7 +23,6 @@ body,
 body {
   background: #07070f;
   color: #fff;
-  overflow: hidden;
   font-family:
     "Friz Quadrata", "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
@@ -48,6 +47,10 @@ body * {
 ══════════════════════════════════════════════════════════════ */
 
 .wc3-scene {
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
   background-image:
     /* SVG fractal noise — stone/terrain micro-texture */
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='512' height='512'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='512' height='512' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E"),
@@ -105,12 +108,13 @@ body * {
     100% 100%,
     100% 100%,
     100% 100%;
+  background-attachment: fixed;
 }
 
 /* Fog layer A — slow drift */
 .wc3-scene::before {
   content: "";
-  position: absolute;
+  position: fixed;
   inset: -10%;
   pointer-events: none;
   z-index: 0;
@@ -132,7 +136,7 @@ body * {
 /* Fog layer B — slower counter-drift */
 .wc3-scene::after {
   content: "";
-  position: absolute;
+  position: fixed;
   inset: -10%;
   pointer-events: none;
   z-index: 0;
@@ -177,4 +181,138 @@ body * {
 .wc3-scene > * {
   position: relative;
   z-index: 1;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DEMO LAYOUT
+══════════════════════════════════════════════════════════════ */
+
+/* Race selector bar */
+.demo-race-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 16px 6px;
+  flex-wrap: wrap;
+}
+
+/* Main responsive grid */
+.demo-grid {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.6fr) repeat(3, 1fr);
+  gap: 20px 28px;
+  padding: 16px 32px 48px;
+  max-width: 1440px;
+  margin: 0 auto;
+  align-items: start;
+}
+
+/* Column containers */
+.demo-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.demo-col--models {
+  align-items: center;
+}
+
+/* Hero portrait wrapper */
+.demo-hero-wrap {
+  width: 100%;
+  max-width: 390px;
+}
+
+/* Worker unit wrapper — needs explicit dimensions since the canvas is position:absolute */
+.demo-worker-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 390px;
+  aspect-ratio: 1 / 1;
+}
+
+/* Section component */
+.demo-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.demo-section-title {
+  color: #c8a44e;
+  font-family: "Friz Quadrata", serif;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 1px 1px 2px #000;
+  border-bottom: 1px solid rgba(200, 164, 78, 0.25);
+  padding-bottom: 4px;
+}
+
+/* Utility layout classes */
+.demo-radio-group {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.demo-btn-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.demo-btn-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.demo-panel-text {
+  color: #fcd312;
+  font-family: "Friz Quadrata", serif;
+  font-size: 13px;
+}
+
+/* ══════════════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+══════════════════════════════════════════════════════════════ */
+
+/* Tablet: 2 columns */
+@media (max-width: 1100px) {
+  .demo-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px 24px;
+    padding: 16px 24px 40px;
+  }
+}
+
+/* Mobile large: still 2 columns but tighter */
+@media (max-width: 768px) {
+  .demo-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 12px 16px 32px;
+  }
+
+  .demo-race-bar {
+    gap: 6px;
+    padding: 10px 12px 4px;
+  }
+}
+
+/* Mobile small: single column */
+@media (max-width: 520px) {
+  .demo-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding: 12px 14px 32px;
+  }
+
+  .demo-col--models {
+    align-items: stretch;
+  }
 }

@@ -1,8 +1,8 @@
 .hero-portrait {
   position: relative;
   width: 100%;
+  max-width: 390px;
   aspect-ratio: 130 / 160;
-  image-rendering: pixelated;
 }
 
 .hero-portrait__window {

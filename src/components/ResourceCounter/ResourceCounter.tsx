@@ -1,24 +1,12 @@
 import { useCallback, useRef } from "react";
 import { useBlpTextures, useCanvasRenderer } from "../../utils/blpLoader";
-import { useCurrentRace } from "../../state/race";
 import { useGoldCurrent, useLumberCurrent } from "../../state/resources";
 import "./style.css";
 
-type SlotType = "gold" | "lumber" | "supply";
+type SlotType = "gold" | "lumber" | "food";
 
-function ResourceSlot({ type }: { type: SlotType }) {
+function ResourceIcon({ path }: { path: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const race = useCurrentRace();
-  const gold = useGoldCurrent();
-  const lumber = useLumberCurrent();
-
-  const path =
-    type === "gold"
-      ? "resources/ResourceGold.blp"
-      : type === "lumber"
-        ? "resources/ResourceLumber.blp"
-        : `resources/Resource${race}.blp`;
-
   const tex = useBlpTextures({ icon: path });
 
   const draw = useCallback(
@@ -31,12 +19,26 @@ function ResourceSlot({ type }: { type: SlotType }) {
 
   useCanvasRenderer(canvasRef, draw, [tex]);
 
+  return <canvas ref={canvasRef} className="wc-resource-icon" />;
+}
+
+function ResourceSlot({ type }: { type: SlotType }) {
+  const gold = useGoldCurrent();
+  const lumber = useLumberCurrent();
+
+  const iconPath =
+    type === "gold"
+      ? "resources/ResourceGold.blp"
+      : type === "lumber"
+        ? "resources/ResourceLumber.blp"
+        : "resources/ResourceSupply.blp";
+
   const value =
     type === "gold" ? gold : type === "lumber" ? lumber : "50 / 80";
 
   return (
     <div className="wc-resource-slot">
-      <canvas ref={canvasRef} className="wc-resource-icon" />
+      <ResourceIcon path={iconPath} />
       <span className="wc-res-value">{value}</span>
     </div>
   );
@@ -47,7 +49,7 @@ export default function ResourceCounter() {
     <div className="wc-resources">
       <ResourceSlot type="gold" />
       <ResourceSlot type="lumber" />
-      <ResourceSlot type="supply" />
+      <ResourceSlot type="food" />
       <span className="wc-upkeep-text wc-upkeep-green">No Upkeep</span>
     </div>
   );

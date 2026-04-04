@@ -22,8 +22,8 @@ export default function LoadingBar({ progress }: Props) {
     (ctx: CanvasRenderingContext2D, w: number, h: number) => {
       if (!tex) return;
 
-      // Background tiled inside border area (4px inset)
-      const pad = 4;
+      // Inset proportional to border texture thickness
+      const pad = Math.round(h * 0.12);
       ctx.save();
       ctx.beginPath();
       ctx.rect(pad, pad, w - pad * 2, h - pad * 2);

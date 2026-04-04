@@ -16,7 +16,6 @@ import {
   HeroPortraitModel,
   ResourceCounter,
   WorkerUnitModel,
-  TimeIndicatorModel,
   EscOptionButton,
   EscRadioButton,
   EscCheckbox,
@@ -47,35 +46,13 @@ const MAP_LIST = [
 function Section({
   title,
   children,
-  style,
 }: {
   title: string;
   children: React.ReactNode;
-  style?: React.CSSProperties;
 }) {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: 8,
-        ...style,
-      }}
-    >
-      <div
-        style={{
-          color: "#c8a44e",
-          fontFamily: '"Friz Quadrata", serif',
-          fontSize: 11,
-          textTransform: "uppercase",
-          letterSpacing: 1,
-          textShadow: "1px 1px 2px #000",
-          borderBottom: "1px solid rgba(200,164,78,0.25)",
-          paddingBottom: 4,
-        }}
-      >
-        {title}
-      </div>
+    <div className="demo-section">
+      <div className="demo-section-title">{title}</div>
       {children}
     </div>
   );
@@ -96,55 +73,36 @@ function App() {
   const [xp, setXp] = useState(35);
 
   return (
-    <>
+    <div className="wc3-scene">
       <CursorOverlay />
 
       {/* Race selector */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          gap: 8,
-          padding: "10px 16px",
-        }}
-      >
+      <header className="demo-race-bar">
         {RACES.map((r: Race) => (
           <GlueSmallButton key={r} onClick={() => setCurrentRace(r)}>
             {r === "NightElf" ? "Night Elf" : r}
           </GlueSmallButton>
         ))}
-      </div>
+      </header>
 
-      {/* Main grid */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "auto 240px 300px 280px",
-          gap: "24px 32px",
-          padding: "16px 32px 40px",
-          maxWidth: 1200,
-          margin: "0 auto",
-          alignItems: "start",
-        }}
-      >
-        {/* ── Column 1: Models ── */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-            alignItems: "center",
-          }}
-        >
-          <div style={{ width: 300 }}>
-            <HeroPortraitModel race={race} />
-            <WorkerUnitModel race={race} side="left" />
-          </div>
+      {/* Main content */}
+      <main className="demo-grid">
+        {/* ── Column 1: 3D Models ── */}
+        <div className="demo-col demo-col--models">
+          <Section title="Hero Portrait">
+            <div className="demo-hero-wrap">
+              <HeroPortraitModel race={race} />
+            </div>
+          </Section>
+          <Section title="Worker Unit">
+            <div className="demo-worker-wrap">
+              <WorkerUnitModel race={race} side="left" />
+            </div>
+          </Section>
         </div>
 
         {/* ── Column 2: ESC Menu Controls ── */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div className="demo-col">
           <Section title="Resources">
             <ResourceCounter />
           </Section>
@@ -159,7 +117,7 @@ function App() {
           </Section>
 
           <Section title="Radio Buttons">
-            <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+            <div className="demo-radio-group">
               {RACES.map((r: Race) => (
                 <EscRadioButton
                   key={r}
@@ -201,7 +159,7 @@ function App() {
         </div>
 
         {/* ── Column 3: Glue Buttons ── */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        <div className="demo-col">
           <Section title="Screen Button">
             <GlueScreenButton onClick={() => alert("Click!")}>
               Single Player
@@ -216,7 +174,7 @@ function App() {
           </Section>
 
           <Section title="Menu Button">
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            <div className="demo-btn-stack">
               <GlueMenuButton onClick={() => alert("OK")}>OK</GlueMenuButton>
               <GlueMenuButton variant="single" onClick={() => alert("Cancel")}>
                 Cancel
@@ -248,8 +206,8 @@ function App() {
           </Section>
         </div>
 
-        {/* ── Column 4: CommandCard, Bars, Panels, Lists ── */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+        {/* ── Column 4: CommandCard, Bars, Panels ── */}
+        <div className="demo-col">
           <Section title="Command Card">
             <CommandCard slots={BLADEMASTER_SLOTS} />
           </Section>
@@ -264,7 +222,7 @@ function App() {
             <StatBar label="MP" type="mana" fillPercent={mana} maxValue={400} />
             <StatBar type="xp" fillPercent={xp} hasBorder />
             <StatBar type="build" fillPercent={62} hasBorder />
-            <div style={{ display: "flex", gap: 6 }}>
+            <div className="demo-btn-row">
               <GlueSmallButton
                 onClick={() => setHealth(Math.min(100, health + 10))}
               >
@@ -283,7 +241,7 @@ function App() {
 
           <Section title="Loading Bar">
             <LoadingBar progress={loadProgress} />
-            <div style={{ display: "flex", gap: 6 }}>
+            <div className="demo-btn-row">
               <GlueSmallButton
                 onClick={() =>
                   setLoadProgress(Math.min(100, loadProgress + 15))
@@ -299,13 +257,7 @@ function App() {
 
           <Section title="Menu Panel">
             <MenuPanel style={{ minHeight: 60, padding: 12 }}>
-              <span
-                style={{
-                  color: "#fcd312",
-                  fontFamily: '"Friz Quadrata", serif',
-                  fontSize: 13,
-                }}
-              >
+              <span className="demo-panel-text">
                 Panel content goes here
               </span>
             </MenuPanel>
@@ -327,20 +279,16 @@ function App() {
           </Section>
 
           <Section title="List Box + Scrollbar">
-            <div style={{ display: "flex", gap: 0, height: 140 }}>
-              <div style={{ flex: 1 }}>
-                <GlueListBox
-                  items={MAP_LIST}
-                  value={selectedMap as (typeof MAP_LIST)[number]}
-                  onChange={setSelectedMap}
-                  height={140}
-                />
-              </div>
-            </div>
+            <GlueListBox
+              items={MAP_LIST}
+              value={selectedMap as (typeof MAP_LIST)[number]}
+              onChange={setSelectedMap}
+              height={140}
+            />
           </Section>
         </div>
-      </div>
-    </>
+      </main>
+    </div>
   );
 }
 

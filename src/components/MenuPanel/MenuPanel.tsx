@@ -55,20 +55,31 @@ export default function MenuPanel({ style, children }: Props) {
       drawCell(6, 0, h - corner, corner, corner);
       drawCell(7, w - corner, h - corner, corner, corner);
 
-      // Vertical edges
+      // Vertical edges (tiled)
       const edgeH = h - corner * 2;
       if (edgeH > 0) {
-        drawCell(0, 0, corner, corner, edgeH);
-        drawCell(1, w - corner, corner, corner, edgeH);
+        const tileH = corner;
+        for (let ey = corner; ey < corner + edgeH; ey += tileH) {
+          const segH = Math.min(tileH, corner + edgeH - ey);
+          const srcH = (segH / tileH) * atlasH;
+          ctx.drawImage(tex.border, 0 * cellW, 0, cellW, srcH, 0, ey, corner, segH);
+          ctx.drawImage(tex.border, 1 * cellW, 0, cellW, srcH, w - corner, ey, corner, segH);
+        }
       }
 
-      // Horizontal edges (rotated)
+      // Horizontal edges (rotated + tiled)
       const edgeW = w - corner * 2;
       if (edgeW > 0) {
         const topRot = rotateCellClockwise(tex.border, 2, cellW, atlasH);
         const botRot = rotateCellClockwise(tex.border, 3, cellW, atlasH);
-        ctx.drawImage(topRot, corner, 0, edgeW, corner);
-        ctx.drawImage(botRot, corner, h - corner, edgeW, corner);
+        let drawn = 0;
+        while (drawn < edgeW) {
+          const segW = Math.min(corner, edgeW - drawn);
+          const srcW = (segW / corner) * topRot.width;
+          ctx.drawImage(topRot, 0, 0, srcW, topRot.height, corner + drawn, 0, segW, corner);
+          ctx.drawImage(botRot, 0, 0, srcW, botRot.height, corner + drawn, h - corner, segW, corner);
+          drawn += segW;
+        }
       }
     },
     [tex],
