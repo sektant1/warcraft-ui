@@ -1,5 +1,6 @@
 import { useCallback, useRef } from "react";
 import { useBlpTextures, useCanvasRenderer } from "../../utils/blpLoader";
+import { rotateCellClockwise } from "../../utils/glueButton";
 import "./style.css";
 
 interface Props {
@@ -11,6 +12,7 @@ export default function Tooltip({ children }: Props) {
 
   const tex = useBlpTextures({
     bg: "tooltips/human-tooltip-background.blp",
+    border: "tooltips/human-tooltip-border.blp",
   });
 
   const draw = useCallback(
@@ -24,16 +26,47 @@ export default function Tooltip({ children }: Props) {
         ctx.fillRect(0, 0, w, h);
       }
 
-      // Gold colored border lines
-      const bw = 2;
-      const r = 0.784 * 255,
-        g = 0.659 * 255,
-        b = 0.306 * 255;
-      ctx.fillStyle = `rgb(${r},${g},${b})`;
-      ctx.fillRect(0, 0, w, bw); // top
-      ctx.fillRect(0, h - bw, w, bw); // bottom
-      ctx.fillRect(0, 0, bw, h); // left
-      ctx.fillRect(w - bw, 0, bw, h); // right
+      // Nine-slice border from 8-cell horizontal atlas
+      const atlasW = tex.border.width;
+      const atlasH = tex.border.height;
+      const cellW = atlasW / 8;
+      const corner = Math.max(
+        1,
+        Math.floor(Math.min(cellW, h * 0.35, w / 2, h / 2)),
+      );
+
+      const drawCell = (
+        idx: number,
+        x: number,
+        y: number,
+        cw: number,
+        ch: number,
+      ) => {
+        if (cw <= 0 || ch <= 0) return;
+        ctx.drawImage(tex.border, idx * cellW, 0, cellW, atlasH, x, y, cw, ch);
+      };
+
+      // Corners
+      drawCell(4, 0, 0, corner, corner);
+      drawCell(5, w - corner, 0, corner, corner);
+      drawCell(6, 0, h - corner, corner, corner);
+      drawCell(7, w - corner, h - corner, corner, corner);
+
+      // Vertical edges
+      const edgeH = h - corner * 2;
+      if (edgeH > 0) {
+        drawCell(0, 0, corner, corner, edgeH);
+        drawCell(1, w - corner, corner, corner, edgeH);
+      }
+
+      // Horizontal edges (rotated)
+      const edgeW = w - corner * 2;
+      if (edgeW > 0) {
+        const topRot = rotateCellClockwise(tex.border, 2, cellW, atlasH);
+        const botRot = rotateCellClockwise(tex.border, 3, cellW, atlasH);
+        ctx.drawImage(topRot, corner, 0, edgeW, corner);
+        ctx.drawImage(botRot, corner, h - corner, edgeW, corner);
+      }
     },
     [tex],
   );

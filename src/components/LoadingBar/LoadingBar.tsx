@@ -22,37 +22,30 @@ export default function LoadingBar({ progress }: Props) {
     (ctx: CanvasRenderingContext2D, w: number, h: number) => {
       if (!tex) return;
 
-      // Compute inset from border atlas (8-cell horizontal strip)
-      const cellW = tex.border.width / 8;
-      const corner = Math.max(
-        1,
-        Math.floor(Math.min(cellW, h * 0.35, w / 2, h / 2)),
-      );
-      const inset = Math.max(1, Math.round(corner * 0.25));
-
-      // Background tiled, clipped inside border
+      // Background tiled inside border area (4px inset)
+      const pad = 4;
       ctx.save();
       ctx.beginPath();
-      ctx.rect(inset, inset, w - inset * 2, h - inset * 2);
+      ctx.rect(pad, pad, w - pad * 2, h - pad * 2);
       ctx.clip();
       const bgPattern = ctx.createPattern(tex.bg, "repeat");
       if (bgPattern) {
         ctx.fillStyle = bgPattern;
-        ctx.fillRect(inset, inset, w - inset * 2, h - inset * 2);
+        ctx.fillRect(pad, pad, w - pad * 2, h - pad * 2);
       }
       ctx.restore();
 
-      // Tiled fill
-      const fillPx = ((w - inset * 2) * pct) / 100;
+      // Tiled fill (4px inset matches original renderer)
+      const fillPx = ((w - pad * 2) * pct) / 100;
       if (fillPx > 0) {
         const pattern = ctx.createPattern(tex.fill, "repeat");
         if (pattern) {
           ctx.save();
           ctx.beginPath();
-          ctx.rect(inset, inset, fillPx + 10, h - inset * 5);
+          ctx.rect(pad, pad, fillPx, h - pad * 2);
           ctx.clip();
           ctx.fillStyle = pattern;
-          ctx.fillRect(inset, inset, fillPx, h - inset * 2);
+          ctx.fillRect(pad, pad, fillPx, h - pad * 2);
           ctx.restore();
         }
       }

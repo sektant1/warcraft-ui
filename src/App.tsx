@@ -8,6 +8,8 @@ import {
   GlueCampaignButton,
   GlueDropdown,
   GlueListBox,
+  CommandCard,
+  BLADEMASTER_SLOTS,
   useCurrentRace,
   setCurrentRace,
   CursorOverlay,
@@ -246,8 +248,12 @@ function App() {
           </Section>
         </div>
 
-        {/* ── Column 4: Bars, Panels, Lists ── */}
+        {/* ── Column 4: CommandCard, Bars, Panels, Lists ── */}
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <Section title="Command Card">
+            <CommandCard slots={BLADEMASTER_SLOTS} />
+          </Section>
+
           <Section title="Stat Bars">
             <StatBar
               label="HP"

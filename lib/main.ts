@@ -65,6 +65,10 @@ export { default as BottomHud } from "../src/components/BottomHud/BottomHud";
 export { default as ResourceCounter } from "../src/components/ResourceCounter/ResourceCounter";
 export { default as CursorOverlay } from "../src/components/CursorOverlay/CursorOverlay";
 
+// Components — command card
+export { default as CommandCard, BLADEMASTER_SLOTS } from "../src/components/CommandCard/CommandCard";
+export type { CommandSlot, CommandSlotState } from "../src/components/CommandCard/CommandCard";
+
 // Components — bars & panels
 export { default as StatBar } from "../src/components/StatBar/StatBar";
 export { default as LoadingBar } from "../src/components/LoadingBar/LoadingBar";

@@ -122,7 +122,7 @@ export default function GlueDropdown<T extends string>({
     urls.hover,
   ]);
 
-  // Draw menu canvas
+  // Draw menu canvas (delayed by rAF to ensure layout is computed)
   useEffect(() => {
     const canvas = menuCanvasRef.current;
     const bgUrl = urls.popupBg || urls.bg;
@@ -130,15 +130,18 @@ export default function GlueDropdown<T extends string>({
     if (!open || !canvas || !bgUrl || !borderUrl) return;
     let cancelled = false;
 
-    void Promise.all([loadDataUrlImage(bgUrl), loadDataUrlImage(borderUrl)])
-      .then(([bgImg, borderImg]) => {
-        if (cancelled) return;
-        drawGlueNineSliceToCanvas(canvas, bgImg, borderImg, null, false);
-      })
-      .catch((err) => console.error(err));
+    const rafId = requestAnimationFrame(() => {
+      void Promise.all([loadDataUrlImage(bgUrl), loadDataUrlImage(borderUrl)])
+        .then(([bgImg, borderImg]) => {
+          if (cancelled) return;
+          drawGlueNineSliceToCanvas(canvas, bgImg, borderImg, null, false);
+        })
+        .catch((err) => console.error(err));
+    });
 
     return () => {
       cancelled = true;
+      cancelAnimationFrame(rafId);
     };
   }, [open, urls.popupBg, urls.bg, urls.border]);
 
