@@ -1,0 +1,18 @@
+.wc3-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.wc3-section-title {
+  color: #c8a44e;
+  font-family: "Friz Quadrata", serif;
+  font-size: 13px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  width: 100%;
+  text-shadow: 1px 1px 2px #000;
+  border-bottom: 1px solid rgba(200, 164, 78, 0.25);
+  padding-bottom: 4px;
+}

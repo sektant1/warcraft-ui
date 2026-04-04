@@ -8,6 +8,7 @@ interface Props {
   checked?: boolean;
   disabled?: boolean;
   onChange?: (checked: boolean) => void;
+  race?: import("../../utils/types").Race;
 }
 
 export default function EscCheckbox({
@@ -15,12 +16,14 @@ export default function EscCheckbox({
   checked: controlledChecked,
   disabled = false,
   onChange,
+  race: raceProp,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [internalChecked, setInternalChecked] = useState(
     controlledChecked ?? false,
   );
-  const race = useCurrentRace();
+  const globalRace = useCurrentRace();
+  const race = raceProp ?? globalRace;
   const rp = RACE_PREFIXES[race];
 
   const isControlled = controlledChecked !== undefined;

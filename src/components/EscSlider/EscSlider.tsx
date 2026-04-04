@@ -9,6 +9,7 @@ interface Props {
   value?: number;
   onChange?: (value: number) => void;
   defaultValue?: number;
+  race?: import("../../utils/types").Race;
 }
 
 const TRACK_H = 20;
@@ -18,12 +19,14 @@ export default function EscSlider({
   value: controlled,
   onChange,
   defaultValue = 0.5,
+  race: raceProp,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [internal, setInternal] = useState(controlled ?? defaultValue);
   const dragging = useRef(false);
-  const race = useCurrentRace();
+  const globalRace = useCurrentRace();
+  const race = raceProp ?? globalRace;
   const rp = RACE_PREFIXES[race];
 
   const isControlled = controlled !== undefined;
@@ -102,9 +105,9 @@ export default function EscSlider({
         ctx.drawImage(botRot, corner, trackY + TRACK_H - corner, edgeW, corner);
       }
 
-      // Knob (centered on the full canvas height)
-      const knobW = 20,
-        knobH = 28;
+      // Knob (centered on the full canvas height, preserving aspect ratio)
+      const knobH = 28;
+      const knobW = knobH * (tex.knob.width / tex.knob.height);
       const knobX = value * w - knobW / 2;
       const knobY = h / 2 - knobH / 2;
       ctx.drawImage(tex.knob, knobX, knobY, knobW, knobH);
@@ -120,10 +123,7 @@ export default function EscSlider({
 
     const updateFromEvent = (clientX: number) => {
       const rect = el.getBoundingClientRect();
-      const next = Math.max(
-        0,
-        Math.min(1, (clientX - rect.left) / rect.width),
-      );
+      const next = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
       if (!isControlled) setInternal(next);
       onChange?.(next);
     };
@@ -172,6 +172,7 @@ export default function EscSlider({
       <div ref={wrapRef} className="wc-slider">
         <canvas
           ref={canvasRef}
+          className="wc-slider-knob"
           style={{ width: "100%", height: "100%", display: "block" }}
         />
       </div>

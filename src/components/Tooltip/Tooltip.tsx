@@ -4,10 +4,11 @@ import { rotateCellClockwise } from "../../utils/glueButton";
 import "./style.css";
 
 interface Props {
+  icon?: React.ReactNode;
   children: React.ReactNode;
 }
 
-export default function Tooltip({ children }: Props) {
+export default function Tooltip({ icon, children }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const tex = useBlpTextures({
@@ -85,7 +86,10 @@ export default function Tooltip({ children }: Props) {
           pointerEvents: "none",
         }}
       />
-      <div className="wc-tt-content">{children}</div>
+      <div className="wc-tt-content">
+        {icon && <div className="wc-tt-icon">{icon}</div>}
+        <div className="wc-tt-body">{children}</div>
+      </div>
     </div>
   );
 }

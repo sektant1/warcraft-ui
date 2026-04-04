@@ -1,2 +1,0 @@
-- [Project Overview](project_overview.md) — React lib for Warcraft 3 UI with .blp/.mdx via WebGL, many textures still buggy
-- [User Profile](user_profile.md) — Gabriel, React/WebGL dev, communicates in PT-BR

@@ -1,156 +1,136 @@
-import { useCallback, useRef, useState } from "react";
-import { useBlpTextures, useCanvasRenderer } from "../../utils/blpLoader";
-import { rotateCellClockwise } from "../../utils/glueButton";
-import { useCurrentRace, RACE_PREFIXES } from "../../state/race";
+import { useEffect, useState } from "react";
+import { loadBlpDataUrl, useNineSliceButton } from "../../utils/glueButton";
+import type { NineSliceUrls } from "../../utils/glueButton";
+import { useCurrentRace } from "../../state/race";
+import type { Race } from "../../utils/types";
 import "./style.css";
 
-const PRESSED_OFFSET_X = 2;
-const PRESSED_OFFSET_Y = 2;
+// Press offset from FDF ButtonPushedTextOffset X/Y 0.002f
+const pressedOffsetX = 2;
+const pressedOffsetY = 2;
+
+interface EscSkin {
+  bg: string;
+  bgDown: string;
+  bgDisabled: string;
+  border: string;
+  borderDown: string;
+  borderDisabled: string;
+  hover: string;
+}
+
+const HUMAN_BORDER = "./buttons/esc/human/human-options-button-border-up.blp";
+const HUMAN_BORDER_DOWN =
+  "./buttons/esc/human/human-options-button-border-down.blp";
+const HUMAN_DISABLED_BG =
+  "./buttons/esc/human/human-options-button-background-disabled.blp";
+
+function getEscSkin(race: Race): EscSkin {
+  if (race === "Human") {
+    return {
+      bg: "./buttons/esc/human/human-options-menu-background.blp",
+      bgDown: "./buttons/esc/human/human-options-menu-background.blp",
+      bgDisabled: HUMAN_DISABLED_BG,
+      border: HUMAN_BORDER,
+      borderDown: HUMAN_BORDER_DOWN,
+      borderDisabled: HUMAN_BORDER,
+      hover: "./buttons/esc/human/human-options-button-highlight.blp",
+    };
+  }
+  if (race === "Orc") {
+    return {
+      bg: "./buttons/esc/orc/orc-options-button-background.blp",
+      bgDown: "./buttons/esc/orc/orc-options-button-background-down.blp",
+      bgDisabled: HUMAN_DISABLED_BG,
+      border: HUMAN_BORDER,
+      borderDown: HUMAN_BORDER_DOWN,
+      borderDisabled: HUMAN_BORDER,
+      hover: "./buttons/esc/orc/orc-options-button-highlight.blp",
+    };
+  }
+  if (race === "NightElf") {
+    return {
+      bg: "./buttons/esc/nightelf/nightelf-options-button-background.blp",
+      bgDown:
+        "./buttons/esc/nightelf/nightelf-options-button-background-down.blp",
+      bgDisabled: HUMAN_DISABLED_BG,
+      border: HUMAN_BORDER,
+      borderDown: HUMAN_BORDER_DOWN,
+      borderDisabled: HUMAN_BORDER,
+      hover: "./buttons/esc/nightelf/nightelf-options-button-highlight.blp",
+    };
+  }
+  // Undead
+  return {
+    bg: "./buttons/esc/undead/undead-options-button-background.blp",
+    bgDown: "./buttons/esc/undead/undead-options-button-background-down.blp",
+    bgDisabled:
+      "./buttons/esc/undead/undead-options-button-background-disabled.blp",
+    border: HUMAN_BORDER,
+    borderDown: HUMAN_BORDER_DOWN,
+    borderDisabled: HUMAN_BORDER,
+    hover: "./buttons/esc/undead/undead-options-button-highlight.blp",
+  };
+}
 
 interface Props {
   onClick?: () => void;
   disabled?: boolean;
   children: React.ReactNode;
+  race?: Race;
 }
 
 export default function EscOptionButton({
   onClick,
   disabled,
   children,
+  race: raceProp,
 }: Props) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [hovered, setHovered] = useState(false);
-  const [pressed, setPressed] = useState(false);
-  const race = useCurrentRace();
-  const rp = RACE_PREFIXES[race];
-
-  const bgPath =
-    race === "Human"
-      ? "buttons/esc/human/human-options-menu-background.blp"
-      : `buttons/esc/${rp.esc}/${rp.esc}-options-button-background.blp`;
-
-  const borderPath = `buttons/esc/${rp.esc}/${rp.esc}-options-menu-border.blp`;
-  const highlightPath = `buttons/esc/${rp.esc}/${rp.esc}-options-button-highlight.blp`;
-
-  const tex = useBlpTextures({
-    bg: bgPath,
-    border: borderPath,
-    highlight: highlightPath,
+  const globalRace = useCurrentRace() ?? "Human";
+  const race = raceProp ?? globalRace;
+  const [urls, setUrls] = useState<NineSliceUrls>({
+    bg: "",
+    bgDown: "",
+    bgDisabled: "",
+    border: "",
+    borderDown: "",
+    borderDisabled: "",
+    hover: "",
   });
 
-  const draw = useCallback(
-    (ctx: CanvasRenderingContext2D, w: number, h: number) => {
-      if (!tex) return;
+  useEffect(() => {
+    const skin = getEscSkin(race);
+    void Promise.all(Object.values(skin).map((p) => loadBlpDataUrl(p))).then(
+      ([bg, bgDown, bgDisabled, border, borderDown, borderDisabled, hover]) => {
+        setUrls({
+          bg,
+          bgDown,
+          bgDisabled,
+          border,
+          borderDown,
+          borderDisabled,
+          hover,
+        });
+      },
+    );
+  }, [race]);
 
-      // Tiled background
-      const pattern = ctx.createPattern(tex.bg, "repeat");
-      if (pattern) {
-        ctx.fillStyle = pattern;
-        ctx.fillRect(0, 0, w, h);
-      }
-
-      // Nine-slice border from 8-cell horizontal atlas
-      const atlasW = tex.border.width;
-      const atlasH = tex.border.height;
-      const cellW = atlasW / 8;
-      const corner = Math.max(
-        1,
-        Math.floor(Math.min(cellW, h * 0.35, w / 2, h / 2)),
-      );
-
-      const drawCell = (
-        idx: number,
-        x: number,
-        y: number,
-        cw: number,
-        ch: number,
-      ) => {
-        if (cw <= 0 || ch <= 0) return;
-        ctx.drawImage(
-          tex.border,
-          idx * cellW,
-          0,
-          cellW,
-          atlasH,
-          x,
-          y,
-          cw,
-          ch,
-        );
-      };
-
-      // Corners
-      drawCell(4, 0, 0, corner, corner);
-      drawCell(5, w - corner, 0, corner, corner);
-      drawCell(6, 0, h - corner, corner, corner);
-      drawCell(7, w - corner, h - corner, corner, corner);
-
-      // Vertical edges (tiled)
-      const edgeH = h - corner * 2;
-      if (edgeH > 0) {
-        const tileH = corner;
-        for (let ey = corner; ey < corner + edgeH; ey += tileH) {
-          const segH = Math.min(tileH, corner + edgeH - ey);
-          const srcH = (segH / tileH) * atlasH;
-          ctx.drawImage(tex.border, 0 * cellW, 0, cellW, srcH, 0, ey, corner, segH);
-          ctx.drawImage(tex.border, 1 * cellW, 0, cellW, srcH, w - corner, ey, corner, segH);
-        }
-      }
-
-      // Horizontal edges (rotated + tiled)
-      const edgeW = w - corner * 2;
-      if (edgeW > 0) {
-        const topRot = rotateCellClockwise(tex.border, 2, cellW, atlasH);
-        const botRot = rotateCellClockwise(tex.border, 3, cellW, atlasH);
-        let drawn = 0;
-        while (drawn < edgeW) {
-          const segW = Math.min(corner, edgeW - drawn);
-          const srcW = (segW / corner) * topRot.width;
-          ctx.drawImage(topRot, 0, 0, srcW, topRot.height, corner + drawn, 0, segW, corner);
-          ctx.drawImage(botRot, 0, 0, srcW, botRot.height, corner + drawn, h - corner, segW, corner);
-          drawn += segW;
-        }
-      }
-
-      // Hover highlight (additive blend)
-      if (hovered && !pressed && !disabled) {
-        ctx.save();
-        ctx.globalCompositeOperation = "lighter";
-        ctx.drawImage(tex.highlight, 0, 0, w, h);
-        ctx.restore();
-      }
-    },
-    [tex, hovered, pressed, disabled],
-  );
-
-  useCanvasRenderer(canvasRef, draw, [tex, hovered, pressed, disabled]);
-
-  const handlers = disabled
-    ? {}
-    : {
-        onMouseEnter: () => setHovered(true),
-        onMouseLeave: () => {
-          setHovered(false);
-          setPressed(false);
-        },
-        onMouseDown: () => setPressed(true),
-        onMouseUp: () => setPressed(false),
-      };
+  const { canvasRef, pressed, handlers } = useNineSliceButton(urls, disabled);
 
   return (
     <button
       type="button"
-      className="wc-esc-option-btn"
+      className="esc-option-preview"
       disabled={disabled}
       onClick={onClick}
       {...handlers}
     >
-      <canvas ref={canvasRef} className="wc-esc-option-canvas" />
+      <canvas ref={canvasRef} className="esc-option-canvas" />
       <span
-        className={`wc-esc-option-label${disabled ? " wc-esc-option-label--disabled" : ""}`}
+        className={`esc-option-label${disabled ? " esc-option-label-disabled" : ""}`}
         style={{
           transform: pressed
-            ? `translate(${PRESSED_OFFSET_X}px, ${PRESSED_OFFSET_Y}px)`
+            ? `translate(${pressedOffsetX}px, ${pressedOffsetY}px)`
             : "none",
         }}
       >

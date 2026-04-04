@@ -31,9 +31,14 @@ async function loadRaceCursorFrameDataUrl(race: Race): Promise<string> {
   return promise;
 }
 
-export default function CursorOverlay() {
+interface Props {
+  race?: Race;
+}
+
+export default function CursorOverlay({ race: raceProp }: Props = {}) {
   const ref = useRef<HTMLDivElement>(null);
-  const race = useCurrentRace();
+  const globalRace = useCurrentRace();
+  const race = raceProp ?? globalRace;
 
   useEffect(() => {
     const el = ref.current!;

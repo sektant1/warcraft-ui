@@ -1,8 +1,14 @@
 import { useCurrentRace, RACE_PREFIXES } from "../../state/race";
+import type { Race } from "../../utils/types";
 import "./style.css";
 
-export default function BottomHud() {
-  const race = useCurrentRace();
+interface Props {
+  race?: Race;
+}
+
+export default function BottomHud({ race: raceProp }: Props = {}) {
+  const globalRace = useCurrentRace();
+  const race = raceProp ?? globalRace;
   const rp = RACE_PREFIXES[race];
 
   const tileSrc = (n: string) =>

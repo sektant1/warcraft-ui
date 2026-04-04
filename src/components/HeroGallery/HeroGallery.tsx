@@ -10,10 +10,12 @@ export interface HeroData {
 
 interface Props {
   heroes: Record<string, HeroData[]>;
+  race?: import("../../utils/types").Race;
 }
 
-export default function HeroGallery({ heroes }: Props) {
-  const race = useCurrentRace();
+export default function HeroGallery({ heroes, race: raceProp }: Props) {
+  const globalRace = useCurrentRace();
+  const race = raceProp ?? globalRace;
   const raceHeroes = heroes[race] || [];
 
   return (

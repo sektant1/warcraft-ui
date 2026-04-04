@@ -1,58 +1,70 @@
-.menu-button-shell {
-  position: relative;
-  width: 100%;
-  max-width: 290px;
-  aspect-ratio: 290 / 85;
-  align-self: flex-start;
+.menu-button-showcase {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
-/* Frame: natural 512x128 at 66.4% scale = 340x85.
-   Extends 50px left of shell → -50/290 = -17.24%
-   Width: 340/290 = 117.24% of shell */
+.menu-button-shell {
+  position: relative;
+  width: 290px;
+  height: 85px;
+  overflow: hidden;
+}
+
 .menu-button-frame {
   position: absolute;
   top: 0;
-  left: -17.24%;
-  width: 117.24%;
+  left: -50px;
+  width: 340px;
   height: 100%;
-  object-fit: fill;
-  pointer-events: none;
-  image-rendering: pixelated;
 }
 
-/* Button inner: 211x41 centered in 290x85 shell.
-   left=36/290=12.41%, top=21/85=24.71%
-   width=211/290=72.76%, height=41/85=48.24% */
 .menu-button-inner {
   position: absolute;
-  left: 12.41%;
-  top: 24.71%;
-  width: 72.76%;
-  height: 48.24%;
+  top: 25.8%;
+  right: 5.5%;
+  bottom: 25.8%;
+  left: 12.5%;
   border: none;
   background: transparent;
   padding: 0;
   cursor: pointer;
+  color: var(--wc3-gold);
+  font-family: inherit;
+  font-size: 1.02rem;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.95);
 }
 
 .menu-button-inner--single {
-  left: 16%;
-  top: 28%;
-  width: 68%;
-  height: 44%;
+  top: 24.4%;
+  right: 14.66%;
+  bottom: 27.15%;
+  left: 12.5%;
 }
 
-.menu-button-inner:disabled {
-  cursor: default;
-}
-
-.menu-button-canvas {
+.menu-button-bg,
+.menu-button-border,
+.menu-button-highlight {
   position: absolute;
   inset: 0;
-  width: 100%;
-  height: 100%;
-  display: block;
-  image-rendering: pixelated;
+}
+
+.menu-button-bg {
+  background-repeat: repeat;
+  background-size: 32px 32px;
+}
+
+.menu-button-border {
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.menu-button-highlight {
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  transition: opacity 80ms linear;
+  mix-blend-mode: screen;
 }
 
 .menu-button-label {
@@ -63,8 +75,17 @@
   height: 100%;
   align-items: center;
   justify-content: center;
-  color: var(--wc3-gold, #fcd312);
-  font-family: "Friz Quadrata", serif;
-  font-size: 0.95rem;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.95);
+}
+
+.button-hotkey {
+  color: var(--wc3-white);
+}
+
+.menu-button-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: pixelated;
 }

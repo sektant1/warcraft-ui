@@ -7,7 +7,7 @@
 
 .command-card-grid {
   display: grid;
-  gap: 0px;
+  gap: 6px;
   padding: 0;
 }
 
@@ -22,8 +22,8 @@
   border: none;
   background: transparent;
   cursor: pointer;
-  font-family: "Friz Quadrata", "Palatino Linotype", "Book Antiqua", Palatino,
-    serif;
+  font-family:
+    "Friz Quadrata", "Palatino Linotype", "Book Antiqua", Palatino, serif;
 }
 
 .cmd-btn:focus-visible {
@@ -49,7 +49,8 @@
   color: #fed312;
   font-size: 0.72rem;
   font-weight: bold;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.95),
+  text-shadow:
+    1px 1px 2px rgba(0, 0, 0, 0.95),
     -1px -1px 1px rgba(0, 0, 0, 0.6);
   pointer-events: none;
   line-height: 1;
@@ -73,4 +74,15 @@
 
 .cmd-btn--pressed .cmd-btn-canvas {
   filter: brightness(0.7);
+}
+
+.cmd-btn-tooltip {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  width: max-content;
+  max-width: 280px;
+  pointer-events: none;
 }

@@ -3,9 +3,6 @@ import "../src/index.css";
 // Config
 export { setAssetsBaseUrl } from "../src/utils/config";
 
-// Context / Provider (deprecated — components are now self-contained)
-export { WarcraftRenderer, useRenderer } from "../src/context/RendererContext";
-
 // Types
 export type { Race, RacePrefix, TextureEntry } from "../src/utils/types";
 
@@ -66,8 +63,15 @@ export { default as ResourceCounter } from "../src/components/ResourceCounter/Re
 export { default as CursorOverlay } from "../src/components/CursorOverlay/CursorOverlay";
 
 // Components — command card
-export { default as CommandCard, BLADEMASTER_SLOTS } from "../src/components/CommandCard/CommandCard";
-export type { CommandSlot, CommandSlotState } from "../src/components/CommandCard/CommandCard";
+export {
+  default as CommandCard,
+  createEmptySlots,
+} from "../src/components/CommandCard/CommandCard";
+export type {
+  CommandSlot,
+  CommandSlotState,
+  CommandSlotTooltip,
+} from "../src/components/CommandCard/CommandCard";
 
 // Components — bars & panels
 export { default as StatBar } from "../src/components/StatBar/StatBar";
@@ -78,11 +82,9 @@ export { default as Tooltip } from "../src/components/Tooltip/Tooltip";
 // Components — gallery
 export { default as HeroGallery } from "../src/components/HeroGallery/HeroGallery";
 
-// Components — site
-export { default as AuthModal, AuthButton } from "../src/components/AuthModal/AuthModal";
-export { default as BlpIcon } from "../src/components/AuthModal/BlpIcon";
-export { default as SiteHeader } from "../src/components/SiteHeader/SiteHeader";
+// Components — layout
+export { default as SectionTitle } from "../src/components/SectionTitle/SectionTitle";
+export { default as Heading } from "../src/components/Heading/Heading";
 
-// State — auth & page
-export { useAuth, login, logout, register } from "../src/state/auth";
-export { usePage, currentPage, setPage } from "../src/state/page";
+// Components — icons
+export { default as BlpIcon } from "../src/components/BlpIcon/BlpIcon";

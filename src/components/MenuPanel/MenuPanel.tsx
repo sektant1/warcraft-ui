@@ -7,11 +7,13 @@ import "./style.css";
 interface Props {
   style?: React.CSSProperties;
   children?: React.ReactNode;
+  race?: import("../../utils/types").Race;
 }
 
-export default function MenuPanel({ style, children }: Props) {
+export default function MenuPanel({ style, children, race: raceProp }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const race = useCurrentRace();
+  const globalRace = useCurrentRace();
+  const race = raceProp ?? globalRace;
   const rp = RACE_PREFIXES[race];
 
   const bgPath = `buttons/esc/${rp.esc}/${rp.esc}-options-menu-background.blp`;

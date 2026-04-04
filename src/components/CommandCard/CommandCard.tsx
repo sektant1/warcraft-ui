@@ -1,5 +1,7 @@
-import { useCallback, useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useBlpTextures, useCanvasRenderer } from "../../utils/blpLoader";
+import Tooltip from "../Tooltip/Tooltip";
+import BlpIcon from "../BlpIcon/BlpIcon";
 import "./style.css";
 
 export type CommandSlotState =
@@ -9,12 +11,21 @@ export type CommandSlotState =
   | "active"
   | "empty";
 
+export interface CommandSlotTooltip {
+  name: string;
+  type?: string;
+  description: string;
+  manaCost?: number;
+  cooldown?: number;
+}
+
 export interface CommandSlot {
   hotkey?: string;
   label?: string;
   /** BLP path relative to public/, e.g. "buttons/command/BTNAttack.blp" */
   iconPath?: string;
   state: CommandSlotState;
+  tooltip?: CommandSlotTooltip;
 }
 
 interface Props {
@@ -32,6 +43,7 @@ function CommandButton({
   size: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [hovered, setHovered] = useState(false);
 
   const paths: Record<string, string> = {
     border: "buttons/command/human-multipleselection-border.blp",
@@ -110,6 +122,8 @@ function CommandButton({
       className={`cmd-btn${stateClass}`}
       style={{ width: size, height: size }}
       aria-label={`${slot.label || ""}${slot.hotkey ? ` (${slot.hotkey})` : ""}`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <canvas ref={canvasRef} className="cmd-btn-canvas" />
       {slot.hotkey && (
@@ -117,8 +131,36 @@ function CommandButton({
           {slot.hotkey}
         </span>
       )}
+      {hovered && slot.tooltip && (
+        <div className="cmd-btn-tooltip">
+          <Tooltip icon={slot.iconPath ? <BlpIcon path={slot.iconPath} size={38} /> : undefined}>
+            <div>
+              <strong style={{ color: "#fcd312" }}>{slot.tooltip.name}</strong>
+              {slot.hotkey && <span style={{ color: "#808080", marginLeft: 6, fontSize: 11 }}>({slot.hotkey})</span>}
+            </div>
+            {slot.tooltip.type && (
+              <div style={{ color: "#00c000", fontSize: 11 }}>{slot.tooltip.type}</div>
+            )}
+            <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>
+              {slot.tooltip.description}
+            </div>
+            {(slot.tooltip.manaCost || slot.tooltip.cooldown) && (
+              <div style={{ marginTop: 4, fontSize: 11, color: "#809fff" }}>
+                {slot.tooltip.manaCost != null && <span>Mana: {slot.tooltip.manaCost}</span>}
+                {slot.tooltip.manaCost != null && slot.tooltip.cooldown != null && <span>&nbsp;&nbsp;</span>}
+                {slot.tooltip.cooldown != null && <span>Cooldown: {slot.tooltip.cooldown}s</span>}
+              </div>
+            )}
+          </Tooltip>
+        </div>
+      )}
     </button>
   );
+}
+
+/** Create an array of empty command card slots */
+export function createEmptySlots(count = 12): CommandSlot[] {
+  return Array.from({ length: count }, () => ({ state: "empty" as const }));
 }
 
 /** Default Blademaster command card slots for showcase */

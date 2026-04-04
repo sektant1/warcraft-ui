@@ -12,6 +12,13 @@ dist
 dist-demo
 dist-ssr
 *.local
+.npmrc
+demo
+.remember
+.playwright
+.playwright-cli
+.claude
+public/*
 
 # Editor directories and files
 .vscode/*

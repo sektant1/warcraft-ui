@@ -10,6 +10,7 @@ interface Props {
   maxValue?: number;
   height?: number;
   hasBorder?: boolean;
+  race?: import("../../utils/types").Race;
 }
 
 // WC3 model fill profiles — derived from geoset widths and scale keys
@@ -22,7 +23,7 @@ const UNIT_BAR_PROFILE = {
 const COMPACT_BAR_PROFILE = {
   fillToFrameWidth: 0.26408 / 0.17776,
   minScaleX: 0.014839,
-  maxScaleX: 0.64512,
+  maxScaleX: 0.17776 / 0.26408,
 };
 
 const BUILD_BAR_PROFILE = {
@@ -81,9 +82,11 @@ export default function StatBar({
   maxValue,
   height = 18,
   hasBorder: _ = false,
+  race: raceProp,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const race = useCurrentRace();
+  const globalRace = useCurrentRace();
+  const race = raceProp ?? globalRace;
   const rp = RACE_PREFIXES[race];
 
   // Health/mana use statbar-color.blp + statbar-edge.blp + statbar-highlight.blp
@@ -156,13 +159,14 @@ export default function StatBar({
   useCanvasRenderer(canvasRef, draw, [tex, fillPercent, type]);
 
   const barText = () => {
-    if (type === "build") return fillPercent + "%";
+    const pct = Math.round(fillPercent * 10) / 10;
+    if (type === "build") return pct + "%";
     if (maxValue) {
       return (
         Math.floor((maxValue * fillPercent) / 100) + "\u00a0/ " + maxValue
       );
     }
-    return fillPercent + "%";
+    return pct + "%";
   };
 
   return (

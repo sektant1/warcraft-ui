@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import {
   GlueSmallButton,
@@ -9,7 +9,6 @@ import {
   GlueDropdown,
   GlueListBox,
   CommandCard,
-  BLADEMASTER_SLOTS,
   useCurrentRace,
   setCurrentRace,
   CursorOverlay,
@@ -25,11 +24,333 @@ import {
   LoadingBar,
   MenuPanel,
   Tooltip,
+  SectionTitle,
+  Heading,
+  BlpIcon,
   RACES,
   type Race,
 } from "../lib/main";
+import type { CommandSlot } from "./components/CommandCard/CommandCard";
 
 import "./index.css";
+
+const MOVE: CommandSlot = {
+  hotkey: "Q",
+  label: "Move",
+  iconPath: "buttons/command/BTNMove.blp",
+  state: "ready",
+  tooltip: {
+    name: "Move",
+    description: "Gives the order to move to a location.",
+  },
+};
+const STOP: CommandSlot = {
+  hotkey: "W",
+  label: "Stop",
+  iconPath: "buttons/command/BTNStop.blp",
+  state: "ready",
+  tooltip: { name: "Stop", description: "Stops the current action." },
+};
+const HOLD: CommandSlot = {
+  hotkey: "E",
+  label: "Hold Position",
+  iconPath: "buttons/command/BTNHoldPosition.blp",
+  state: "ready",
+  tooltip: {
+    name: "Hold Position",
+    description: "The unit will hold position and not chase after enemies.",
+  },
+};
+const ATTACK: CommandSlot = {
+  hotkey: "R",
+  label: "Attack",
+  iconPath: "buttons/command/BTNAttack.blp",
+  state: "ready",
+  tooltip: {
+    name: "Attack",
+    description: "Attack a target unit or attack-move to a location.",
+  },
+};
+const PATROL: CommandSlot = {
+  hotkey: "A",
+  label: "Patrol",
+  iconPath: "buttons/command/BTNPatrol.blp",
+  state: "ready",
+  tooltip: {
+    name: "Patrol",
+    description: "Patrols between two points, engaging enemies along the way.",
+  },
+};
+const EMPTY: CommandSlot = { state: "empty" };
+const LEARN: CommandSlot = {
+  hotkey: "F",
+  label: "Learn Skill",
+  iconPath: "buttons/command/BTNSkillz.blp",
+  state: "levelup",
+  tooltip: {
+    name: "Hero Abilities",
+    description: "Spend a skill point to learn or upgrade an ability.",
+  },
+};
+
+const HERO_COMMAND_CARDS: Record<Race, CommandSlot[]> = {
+  // Archmage
+  Human: [
+    MOVE,
+    STOP,
+    HOLD,
+    ATTACK,
+    PATROL,
+    EMPTY,
+    EMPTY,
+    LEARN,
+    {
+      hotkey: "Z",
+      label: "Blizzard",
+      iconPath: "buttons/command/BTNBlizzard.blp",
+      state: "ready",
+      tooltip: {
+        name: "Blizzard",
+        type: "Active ability",
+        description:
+          "Calls down waves of freezing ice shards that damage units in a target area.",
+        manaCost: 75,
+        cooldown: 6,
+      },
+    },
+    {
+      hotkey: "X",
+      label: "Summon Water Elemental",
+      iconPath: "buttons/command/BTNSummonWaterElemental.blp",
+      state: "active",
+      tooltip: {
+        name: "Summon Water Elemental",
+        type: "Active ability",
+        description:
+          "Summons a Water Elemental to fight for the Archmage. The elemental lasts 60 seconds.",
+        manaCost: 125,
+        cooldown: 20,
+      },
+    },
+    {
+      hotkey: "C",
+      label: "Brilliance Aura",
+      iconPath: "buttons/command/BTNBrilliance.blp",
+      state: "passive",
+      tooltip: {
+        name: "Brilliance Aura",
+        type: "Passive ability",
+        description:
+          "Increases nearby friendly units' mana regeneration by 0.75 mana per second.",
+      },
+    },
+    {
+      hotkey: "V",
+      label: "Mass Teleport",
+      iconPath: "buttons/command/BTNMassTeleport.blp",
+      state: "ready",
+      tooltip: {
+        name: "Mass Teleport",
+        type: "Ultimate ability",
+        description:
+          "Teleports 24 nearby units to a target friendly ground unit or structure.",
+        manaCost: 100,
+        cooldown: 20,
+      },
+    },
+  ],
+  // Blademaster
+  Orc: [
+    MOVE,
+    STOP,
+    HOLD,
+    ATTACK,
+    PATROL,
+    EMPTY,
+    EMPTY,
+    LEARN,
+    {
+      hotkey: "Z",
+      label: "Wind Walk",
+      iconPath: "buttons/command/BTNWindWalkOn.blp",
+      state: "active",
+      tooltip: {
+        name: "Wind Walk",
+        type: "Active ability",
+        description:
+          "Allows the Blademaster to become invisible and move faster for a set amount of time. Deals bonus damage on first attack.",
+        manaCost: 75,
+        cooldown: 5,
+      },
+    },
+    {
+      hotkey: "X",
+      label: "Mirror Image",
+      iconPath: "buttons/command/BTNMirrorImage.blp",
+      state: "ready",
+      tooltip: {
+        name: "Mirror Image",
+        type: "Active ability",
+        description:
+          "Confuses the enemy by creating illusions of the Blademaster that deal no damage and take extra damage.",
+        manaCost: 80,
+        cooldown: 10,
+      },
+    },
+    {
+      hotkey: "C",
+      label: "Critical Strike",
+      iconPath: "buttons/command/BTNCriticalStrike.blp",
+      state: "passive",
+      tooltip: {
+        name: "Critical Strike",
+        type: "Passive ability",
+        description:
+          "Gives a 15% chance that the Blademaster will do 2x his normal damage on an attack.",
+      },
+    },
+    {
+      hotkey: "V",
+      label: "Bladestorm",
+      iconPath: "buttons/command/BTNWhirlwind.blp",
+      state: "ready",
+      tooltip: {
+        name: "Bladestorm",
+        type: "Ultimate ability",
+        description:
+          "Causes a whirlwind of destructive force around the Blademaster, rendering him immune to magic and dealing 110 damage per second to nearby enemy units.",
+        manaCost: 200,
+        cooldown: 180,
+      },
+    },
+  ],
+  // Demon Hunter
+  NightElf: [
+    MOVE,
+    STOP,
+    HOLD,
+    ATTACK,
+    PATROL,
+    EMPTY,
+    EMPTY,
+    LEARN,
+    {
+      hotkey: "Z",
+      label: "Mana Burn",
+      iconPath: "buttons/command/BTNManaBurn.blp",
+      state: "ready",
+      tooltip: {
+        name: "Mana Burn",
+        type: "Active ability",
+        description:
+          "Sends a bolt of negative energy that burns up to 50 mana from the target unit. Burned mana is dealt as damage.",
+        cooldown: 7,
+      },
+    },
+    {
+      hotkey: "X",
+      label: "Immolation",
+      iconPath: "buttons/command/BTNImmolationOn.blp",
+      state: "active",
+      tooltip: {
+        name: "Immolation",
+        type: "Toggle ability",
+        description:
+          "Engulfs the Demon Hunter in flames, dealing 10 damage per second to nearby enemy units. Drains mana while active.",
+        manaCost: 35,
+      },
+    },
+    {
+      hotkey: "C",
+      label: "Evasion",
+      iconPath: "buttons/command/BTNEvasion.blp",
+      state: "passive",
+      tooltip: {
+        name: "Evasion",
+        type: "Passive ability",
+        description: "Gives the Demon Hunter a 10% chance to evade an attack.",
+      },
+    },
+    {
+      hotkey: "V",
+      label: "Metamorphosis",
+      iconPath: "buttons/command/BTNMetamorphosis.blp",
+      state: "ready",
+      tooltip: {
+        name: "Metamorphosis",
+        type: "Ultimate ability",
+        description:
+          "Transforms the Demon Hunter into a powerful ranged demon with 500 bonus hit points and a chaos ranged attack for 60 seconds.",
+        manaCost: 150,
+        cooldown: 120,
+      },
+    },
+  ],
+  // Death Knight
+  Undead: [
+    MOVE,
+    STOP,
+    HOLD,
+    ATTACK,
+    PATROL,
+    EMPTY,
+    EMPTY,
+    LEARN,
+    {
+      hotkey: "Z",
+      label: "Death Coil",
+      iconPath: "buttons/command/BTNDeathCoil.blp",
+      state: "ready",
+      tooltip: {
+        name: "Death Coil",
+        type: "Active ability",
+        description:
+          "A coil of death that can damage an enemy living unit for 100 damage or heal a friendly Undead unit for 200 hit points.",
+        manaCost: 75,
+        cooldown: 6,
+      },
+    },
+    {
+      hotkey: "X",
+      label: "Death Pact",
+      iconPath: "buttons/command/BTNDeathPact.blp",
+      state: "ready",
+      tooltip: {
+        name: "Death Pact",
+        type: "Active ability",
+        description:
+          "Kills a target friendly Undead unit, converting 100% of its hit points into health for the Death Knight.",
+        cooldown: 8,
+      },
+    },
+    {
+      hotkey: "C",
+      label: "Unholy Aura",
+      iconPath: "buttons/command/BTNUnholyAura.blp",
+      state: "passive",
+      tooltip: {
+        name: "Unholy Aura",
+        type: "Passive ability",
+        description:
+          "Increases nearby friendly units' movement speed by 10% and life regeneration rate.",
+      },
+    },
+    {
+      hotkey: "V",
+      label: "Animate Dead",
+      iconPath: "buttons/command/BTNAnimateDead.blp",
+      state: "active",
+      tooltip: {
+        name: "Animate Dead",
+        type: "Ultimate ability",
+        description:
+          "Raises 6 dead units in an area to fight for the Death Knight for 120 seconds.",
+        manaCost: 175,
+        cooldown: 240,
+      },
+    },
+  ],
+};
 
 const DIFFICULTIES = ["Easy", "Normal", "Hard", "Insane"] as const;
 const MAP_LIST = [
@@ -43,21 +364,6 @@ const MAP_LIST = [
   "Centaur Grove",
 ] as const;
 
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="demo-section">
-      <div className="demo-section-title">{title}</div>
-      {children}
-    </div>
-  );
-}
-
 function App() {
   const race = useCurrentRace();
 
@@ -67,10 +373,27 @@ function App() {
   const [playerName, setPlayerName] = useState("");
   const [difficulty, setDifficulty] = useState<string>("Normal");
   const [selectedMap, setSelectedMap] = useState<string>("Lost Temple");
-  const [loadProgress, setLoadProgress] = useState(42);
-  const [health, setHealth] = useState(75);
-  const [mana, setMana] = useState(60);
-  const [xp, setXp] = useState(35);
+  const [hpPct, setHpPct] = useState(0);
+  const [mpPct, setMpPct] = useState(0);
+  const [xpPct, setXpPct] = useState(0);
+  const [buildPct, setBuildPct] = useState(0);
+  const [loadPct, setLoadPct] = useState(0);
+
+  useEffect(() => {
+    const bars = [
+      { set: setHpPct, step: 0.8, interval: 120 },
+      { set: setMpPct, step: 1.2, interval: 90 },
+      { set: setXpPct, step: 0.5, interval: 150 },
+      { set: setBuildPct, step: 1.5, interval: 100 },
+      { set: setLoadPct, step: 0.6, interval: 130 },
+    ];
+    const timers = bars.map(({ set, step, interval }) =>
+      setInterval(() => {
+        set((prev) => (prev >= 100 ? 0 : Math.min(100, prev + step)));
+      }, interval),
+    );
+    return () => timers.forEach(clearInterval);
+  }, []);
 
   return (
     <div className="wc3-scene">
@@ -79,44 +402,165 @@ function App() {
       {/* Race selector */}
       <header className="demo-race-bar">
         {RACES.map((r: Race) => (
-          <GlueSmallButton key={r} onClick={() => setCurrentRace(r)}>
+          <EscOptionButton key={r} onClick={() => setCurrentRace(r)}>
             {r === "NightElf" ? "Night Elf" : r}
-          </GlueSmallButton>
+          </EscOptionButton>
         ))}
       </header>
 
       {/* Main content */}
       <main className="demo-grid">
-        {/* ── Column 1: 3D Models ── */}
-        <div className="demo-col demo-col--models">
-          <Section title="Hero Portrait">
+        {/* ── Column 1: Hero + ESC Menu Controls ── */}
+        <div className="demo-col">
+          <SectionTitle title="Hero Portrait">
             <div className="demo-hero-wrap">
               <HeroPortraitModel race={race} />
             </div>
-          </Section>
-          <Section title="Worker Unit">
+          </SectionTitle>
+
+          <SectionTitle title="Resources">
+            <ResourceCounter />
+          </SectionTitle>
+          <SectionTitle title="Command Card">
+            <CommandCard slots={HERO_COMMAND_CARDS[race]} />
+          </SectionTitle>
+          <SectionTitle title="Worker Unit">
             <div className="demo-worker-wrap">
               <WorkerUnitModel race={race} side="left" />
             </div>
-          </Section>
+          </SectionTitle>
         </div>
 
-        {/* ── Column 2: ESC Menu Controls ── */}
+        {/* ── Column 3: Glue Buttons ── */}
         <div className="demo-col">
-          <Section title="Resources">
-            <ResourceCounter />
-          </Section>
+          <SectionTitle title="Screen Button">
+            <GlueScreenButton onClick={() => alert("Click!")}>
+              Single Player
+            </GlueScreenButton>
+            <GlueScreenButton disabled>Disabled</GlueScreenButton>
+          </SectionTitle>
 
-          <Section title="Checkboxes">
+          <SectionTitle title="Bordered Button">
+            <GlueBorderedButton onClick={() => alert("Click!")}>
+              Create Game
+            </GlueBorderedButton>
+          </SectionTitle>
+
+          <SectionTitle title="Option Buttons" className="demo-center">
+            <EscOptionButton
+              onClick={() =>
+                setCurrentRace(RACES[Math.floor(Math.random() * RACES.length)])
+              }
+            >
+              Random Race
+            </EscOptionButton>
+            <EscOptionButton disabled>Disabled</EscOptionButton>
+          </SectionTitle>
+          <SectionTitle title="Menu Button" className="demo-center">
+            <div className="demo-btn-stack">
+              <GlueMenuButton onClick={() => alert("OK")}>OK</GlueMenuButton>
+              <GlueMenuButton variant="single" onClick={() => alert("Cancel")}>
+                Cancel
+              </GlueMenuButton>
+            </div>
+          </SectionTitle>
+
+          <SectionTitle title="Campaign Button">
+            <GlueCampaignButton onClick={() => alert("Campaign!")}>
+              Human Campaign
+            </GlueCampaignButton>
+          </SectionTitle>
+
+          <SectionTitle title="Sliders">
+            <EscSlider
+              label="Music"
+              value={musicVolume}
+              onChange={setMusicVolume}
+            />
+            <EscSlider label="SFX" value={sfxVolume} onChange={setSfxVolume} />
+          </SectionTitle>
+
+          <SectionTitle title="Input Box">
+            <InputBox
+              value={playerName}
+              placeholder="Player name..."
+              onChange={setPlayerName}
+            />
+          </SectionTitle>
+          <SectionTitle title="Dropdown">
+            <GlueDropdown
+              options={MAP_LIST}
+              value={selectedMap as (typeof MAP_LIST)[number]}
+              onChange={setSelectedMap}
+            />
+          </SectionTitle>
+
+          <SectionTitle title="List Box + Scrollbar">
+            <GlueListBox
+              items={MAP_LIST}
+              value={selectedMap as (typeof MAP_LIST)[number]}
+              onChange={setSelectedMap}
+              height={140}
+            />
+          </SectionTitle>
+        </div>
+
+        {/* ── Column 4: CommandCard, Bars, Panels ── */}
+        <div className="demo-col">
+          <SectionTitle title="Headings">
+            <Heading level={1}>Warcraft III</Heading>
+            <Heading
+              level={2}
+              icon={<BlpIcon path="resources/ResourceGold.blp" size={20} />}
+            >
+              Gold Mines
+            </Heading>
+            <Heading
+              level={3}
+              icon={<BlpIcon path="resources/ResourceLumber.blp" size={16} />}
+            >
+              Lumber Mill
+            </Heading>
+            <Heading level={4}>Supply Details</Heading>
+          </SectionTitle>
+
+          <SectionTitle title="Stat Bars">
+            <StatBar
+              label="HP"
+              type="health"
+              fillPercent={hpPct}
+              maxValue={1200}
+            />
+            <StatBar
+              label="MP"
+              type="mana"
+              fillPercent={mpPct}
+              maxValue={400}
+            />
+            <StatBar type="xp" fillPercent={xpPct} hasBorder />
+            <StatBar type="build" fillPercent={buildPct} hasBorder />
+          </SectionTitle>
+
+          <SectionTitle title="Loading Bar">
+            <LoadingBar progress={loadPct} />
+          </SectionTitle>
+
+          <SectionTitle title="Menu Panel">
+            <MenuPanel style={{ minHeight: 60, padding: 12 }}>
+              <span className="demo-panel-text">Panel content goes here</span>
+            </MenuPanel>
+          </SectionTitle>
+
+          <SectionTitle title="Checkboxes">
             <EscCheckbox
               label="Show tips"
               checked={tipsEnabled}
               onChange={setTipsEnabled}
             />
             <EscCheckbox label="Disabled" checked disabled />
-          </Section>
+          </SectionTitle>
 
-          <Section title="Radio Buttons">
+          <SectionTitle title="Radio Buttons">
             <div className="demo-radio-group">
               {RACES.map((r: Race) => (
                 <EscRadioButton
@@ -127,144 +571,16 @@ function App() {
                 />
               ))}
             </div>
-          </Section>
-
-          <Section title="Sliders">
-            <EscSlider
-              label="Music"
-              value={musicVolume}
-              onChange={setMusicVolume}
-            />
-            <EscSlider label="SFX" value={sfxVolume} onChange={setSfxVolume} />
-          </Section>
-
-          <Section title="Input Box">
-            <InputBox
-              value={playerName}
-              placeholder="Player name..."
-              onChange={setPlayerName}
-            />
-          </Section>
-
-          <Section title="Option Buttons">
-            <EscOptionButton
-              onClick={() =>
-                setCurrentRace(RACES[Math.floor(Math.random() * RACES.length)])
+          </SectionTitle>
+          <SectionTitle title="Tooltip">
+            <Tooltip
+              icon={
+                <BlpIcon
+                  path="./buttons/command/BTNBrillianceAura.blp"
+                  size={38}
+                />
               }
             >
-              Random Race
-            </EscOptionButton>
-            <EscOptionButton disabled>Disabled</EscOptionButton>
-          </Section>
-        </div>
-
-        {/* ── Column 3: Glue Buttons ── */}
-        <div className="demo-col">
-          <Section title="Screen Button">
-            <GlueScreenButton onClick={() => alert("Click!")}>
-              Single Player
-            </GlueScreenButton>
-            <GlueScreenButton disabled>Disabled</GlueScreenButton>
-          </Section>
-
-          <Section title="Bordered Button">
-            <GlueBorderedButton onClick={() => alert("Click!")}>
-              Create Game
-            </GlueBorderedButton>
-          </Section>
-
-          <Section title="Menu Button">
-            <div className="demo-btn-stack">
-              <GlueMenuButton onClick={() => alert("OK")}>OK</GlueMenuButton>
-              <GlueMenuButton variant="single" onClick={() => alert("Cancel")}>
-                Cancel
-              </GlueMenuButton>
-            </div>
-          </Section>
-
-          <Section title="Campaign Button">
-            <GlueCampaignButton onClick={() => alert("Campaign!")}>
-              Human Campaign
-            </GlueCampaignButton>
-          </Section>
-
-          <Section title="Dropdown">
-            <GlueDropdown
-              options={MAP_LIST}
-              value={selectedMap as (typeof MAP_LIST)[number]}
-              onChange={setSelectedMap}
-            />
-          </Section>
-
-          <Section title="Bnet Edit Box">
-            <GlueListBox
-              items={DIFFICULTIES}
-              value={difficulty as (typeof DIFFICULTIES)[number]}
-              onChange={setDifficulty}
-              height={120}
-            />
-          </Section>
-        </div>
-
-        {/* ── Column 4: CommandCard, Bars, Panels ── */}
-        <div className="demo-col">
-          <Section title="Command Card">
-            <CommandCard slots={BLADEMASTER_SLOTS} />
-          </Section>
-
-          <Section title="Stat Bars">
-            <StatBar
-              label="HP"
-              type="health"
-              fillPercent={health}
-              maxValue={1200}
-            />
-            <StatBar label="MP" type="mana" fillPercent={mana} maxValue={400} />
-            <StatBar type="xp" fillPercent={xp} hasBorder />
-            <StatBar type="build" fillPercent={62} hasBorder />
-            <div className="demo-btn-row">
-              <GlueSmallButton
-                onClick={() => setHealth(Math.min(100, health + 10))}
-              >
-                +HP
-              </GlueSmallButton>
-              <GlueSmallButton
-                onClick={() => setMana(Math.min(100, mana + 10))}
-              >
-                +MP
-              </GlueSmallButton>
-              <GlueSmallButton onClick={() => setXp(Math.min(100, xp + 10))}>
-                +XP
-              </GlueSmallButton>
-            </div>
-          </Section>
-
-          <Section title="Loading Bar">
-            <LoadingBar progress={loadProgress} />
-            <div className="demo-btn-row">
-              <GlueSmallButton
-                onClick={() =>
-                  setLoadProgress(Math.min(100, loadProgress + 15))
-                }
-              >
-                +15%
-              </GlueSmallButton>
-              <GlueSmallButton onClick={() => setLoadProgress(0)}>
-                Reset
-              </GlueSmallButton>
-            </div>
-          </Section>
-
-          <Section title="Menu Panel">
-            <MenuPanel style={{ minHeight: 60, padding: 12 }}>
-              <span className="demo-panel-text">
-                Panel content goes here
-              </span>
-            </MenuPanel>
-          </Section>
-
-          <Section title="Tooltip">
-            <Tooltip>
               <div>
                 <strong style={{ color: "#fcd312" }}>Brilliance Aura</strong>
               </div>
@@ -276,16 +592,15 @@ function App() {
                 per second.
               </div>
             </Tooltip>
-          </Section>
-
-          <Section title="List Box + Scrollbar">
-            <GlueListBox
-              items={MAP_LIST}
-              value={selectedMap as (typeof MAP_LIST)[number]}
-              onChange={setSelectedMap}
-              height={140}
-            />
-          </Section>
+            <Tooltip>
+              <div>
+                <strong style={{ color: "#fcd312" }}>Without icon</strong>
+              </div>
+              <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>
+                Tooltips still work without an icon.
+              </div>
+            </Tooltip>
+          </SectionTitle>
         </div>
       </main>
     </div>

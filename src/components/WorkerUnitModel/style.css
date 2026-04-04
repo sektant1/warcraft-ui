@@ -1,0 +1,17 @@
+.worker-unit {
+  position: absolute;
+  bottom: calc(-44px - var(--footer-worker-y-offset, 0px));
+  width: clamp(138px, 12.1vw, 186px);
+  height: clamp(250px, 21vw, 332px);
+  pointer-events: none;
+  z-index: 20;
+}
+
+.worker-unit--left {
+  left: clamp(0px, 0.9vw, 18px);
+}
+
+.worker-unit--right {
+  right: clamp(0px, 0.9vw, 18px);
+  transform: scaleX(-1);
+}

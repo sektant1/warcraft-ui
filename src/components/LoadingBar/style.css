@@ -1,13 +1,74 @@
-.wc-loading-bar {
+.loading-bar-composite {
   position: relative;
   width: min(100%, 640px);
-  aspect-ratio: 8.007 / 1;
+  aspect-ratio: 8.007 / 1; /* LoadBar.mdx border geoset ratio: 0.45804 / 0.05720 */
   height: auto;
   max-height: 80px;
+  overflow: visible;
+}
+
+.loading-bar-composite .lb-track {
+  position: absolute;
   overflow: hidden;
 }
 
-.wc-loading-bar .wc-lb-text {
+.loading-bar-composite .lb-bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  image-rendering: auto;
+}
+
+.loading-bar-composite .lb-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  image-rendering: auto;
+  transition: width 90ms linear;
+  will-change: width;
+}
+
+.loading-bar-composite .lb-border,
+.loading-bar-composite .lb-glass {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: fill;
+  pointer-events: none;
+}
+
+.loading-bar-composite .lb-border {
+  z-index: 1;
+}
+
+.loading-bar-composite .lb-glass {
+  z-index: 2;
+  opacity: 1;
+}
+
+.loading-bar-composite .lb-glow {
+  position: absolute;
+  display: block;
+  object-fit: fill;
+  z-index: 4;
+  mix-blend-mode: screen;
+  mix-blend-mode: plus-lighter;
+  pointer-events: none;
+  transition:
+    width 90ms linear,
+    opacity 90ms linear;
+}
+
+.loading-bar-composite .lb-text {
   position: absolute;
   inset: 0;
   display: flex;
@@ -18,4 +79,5 @@
   font-size: 0.78rem;
   line-height: 1;
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.95);
+  pointer-events: none;
 }

@@ -7,6 +7,7 @@ import {
 } from "war3-model";
 import { mat3, mat4, quat, vec3 } from "gl-matrix";
 import type { Race } from "../../utils/types";
+import "./style.css";
 
 type ModelType = ReturnType<typeof parseMDX>;
 type WorkerSide = "left" | "right";
@@ -264,37 +265,65 @@ export default function WorkerUnitModel(props: WorkerUnitModelProps) {
       updateProjection();
     };
 
-    const configureCamera = (model: ModelType, sequenceIdx: number) => {
+    // Per-race camera tweaks: targetZ shifts the look-at point vertically,
+    // distance multiplies the auto-computed pull-back distance.
+    const CAMERA_TWEAKS: Record<Race, { targetZ: number; dist: number }> = {
+      Human: { targetZ: 0, dist: 1.0 },
+      Orc: { targetZ: 0, dist: 1.0 },
+      NightElf: { targetZ: 10, dist: 1.0 },
+      Undead: { targetZ: 20, dist: 0.85 },
+    };
+
+    const configureCamera = (
+      model: ModelType,
+      sequenceIdx: number,
+      race: Race,
+    ) => {
+      const fov = 0.75;
+      s.cameraFov = fov;
+
       const extents = getExtentsForSequence(model, sequenceIdx);
       const extMin = extents.min;
       const extMax = extents.max;
+
+      // Center and size of the bounding box
+      let cx = 0,
+        cy = 0,
+        cz = 60;
+      let bboxSize = 200;
+
       if (extMin && extMax) {
-        const cx = (extMin[0] + extMax[0]) * 0.5,
-          cy = (extMin[1] + extMax[1]) * 0.5,
-          cz = (extMin[2] + extMax[2]) * 0.5;
-        const dx = extMax[0] - extMin[0],
-          dy = extMax[1] - extMin[1],
-          dz = extMax[2] - extMin[2];
-        const rawRadius = Math.hypot(dx, dy, dz) * 0.5;
-        const radius = Math.min(190, Math.max(100, rawRadius));
-        const height = Math.min(220, Math.max(90, dz));
-        vec3.set(
-          s.cameraPos,
-          cx + radius * 0.42,
-          cy - radius * 2.25,
-          cz + height * 0.62,
-        );
-        vec3.set(s.cameraTarget, cx, cy, cz + height * 0.18);
-        s.cameraFov = 0.86;
-        s.cameraNear = Math.max(8, radius * 0.08);
-        s.cameraFar = Math.max(s.cameraNear + 300, radius * 11.5);
-      } else {
-        vec3.set(s.cameraPos, 48, -420, 180);
-        vec3.set(s.cameraTarget, 0, 0, 100);
-        s.cameraFov = 0.78;
-        s.cameraNear = 8;
-        s.cameraFar = 2200;
+        cx = (extMin[0] + extMax[0]) * 0.5;
+        cy = (extMin[1] + extMax[1]) * 0.5;
+        cz = (extMin[2] + extMax[2]) * 0.5;
+        const dx = extMax[0] - extMin[0];
+        const dy = extMax[1] - extMin[1];
+        const dz = extMax[2] - extMin[2];
+        // Use the largest dimension to determine framing distance
+        bboxSize = Math.max(dx, dy, dz, 80);
       }
+
+      const tweak = CAMERA_TWEAKS[race];
+
+      // Target: center of model, with per-race vertical adjustment
+      const targetZ = cz + tweak.targetZ;
+      vec3.set(s.cameraTarget, cx, cy, targetZ);
+
+      // Camera distance: pull back enough to fit the bounding box in the FOV
+      // 1.4 padding factor ensures no part of the model is clipped
+      const dist = (bboxSize / (2 * Math.tan(fov / 2))) * 1.7 * tweak.dist;
+
+      // Position: slightly to the right, straight back, same height as target
+      vec3.set(
+        s.cameraPos,
+        cx + dist * 0.08,
+        cy - dist,
+        targetZ + bboxSize * 0.05,
+      );
+
+      s.cameraNear = Math.max(1, dist * 0.01);
+      s.cameraFar = dist * 5;
+
       mat4.lookAt(
         s.mvMatrix,
         s.cameraPos,
@@ -345,7 +374,7 @@ export default function WorkerUnitModel(props: WorkerUnitModelProps) {
       const interval = getSequenceInterval(model, s.sequenceIndex);
       s.sequenceStart = interval.start;
       s.sequenceLength = interval.length;
-      configureCamera(model, s.sequenceIndex);
+      configureCamera(model, s.sequenceIndex, race);
       s.modelRenderer.setCamera(s.cameraPos, s.cameraQuat);
       s.modelRenderer.setLightPosition(s.cameraPos);
       s.modelRenderer.setLightColor(vec3.fromValues(1, 1, 1));
@@ -414,6 +443,7 @@ export default function WorkerUnitModel(props: WorkerUnitModelProps) {
   return (
     <canvas
       ref={canvasRef}
+      className="worker-unit"
       style={{
         position: "absolute",
         inset: "0",

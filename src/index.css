@@ -7,7 +7,7 @@
 @font-face {
   font-family: "Friz Quadrata";
   src: url("/fonts/FRIZQT__.TTF") format("truetype");
-  font-weight: 400;
+  font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
@@ -200,10 +200,10 @@ body * {
 /* Main responsive grid */
 .demo-grid {
   display: grid;
-  grid-template-columns: minmax(320px, 1.6fr) repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px 28px;
   padding: 16px 32px 48px;
-  max-width: 1440px;
+  max-width: 1280px;
   margin: 0 auto;
   align-items: start;
 }
@@ -216,10 +216,6 @@ body * {
   min-width: 0;
 }
 
-.demo-col--models {
-  align-items: center;
-}
-
 /* Hero portrait wrapper */
 .demo-hero-wrap {
   width: 100%;
@@ -230,26 +226,7 @@ body * {
 .demo-worker-wrap {
   position: relative;
   width: 100%;
-  max-width: 390px;
-  aspect-ratio: 1 / 1;
-}
-
-/* Section component */
-.demo-section {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.demo-section-title {
-  color: #c8a44e;
-  font-family: "Friz Quadrata", serif;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  text-shadow: 1px 1px 2px #000;
-  border-bottom: 1px solid rgba(200, 164, 78, 0.25);
-  padding-bottom: 4px;
+  aspect-ratio: 3 / 5;
 }
 
 /* Utility layout classes */
@@ -271,10 +248,15 @@ body * {
   flex-wrap: wrap;
 }
 
+.demo-center {
+  align-items: center;
+}
+
 .demo-panel-text {
   color: #fcd312;
   font-family: "Friz Quadrata", serif;
   font-size: 13px;
+  width: 100%;
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -282,7 +264,7 @@ body * {
 ══════════════════════════════════════════════════════════════ */
 
 /* Tablet: 2 columns */
-@media (max-width: 1100px) {
+@media (max-width: 960px) {
   .demo-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px 24px;
@@ -310,9 +292,5 @@ body * {
     grid-template-columns: 1fr;
     gap: 20px;
     padding: 12px 14px 32px;
-  }
-
-  .demo-col--models {
-    align-items: stretch;
   }
 }

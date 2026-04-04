@@ -14,51 +14,87 @@ export default function LoadingBar({ progress }: Props) {
     fill: "loading/Loading-BarFill.blp",
     border: "loading/Loading-BarBorder.blp",
     glass: "loading/Loading-BarGlass.blp",
+    glow: "loading/Loading-BarGlow.blp",
   });
 
-  const pct = Math.min(progress, 98);
+  const pct = Math.max(0, Math.min(progress, 100));
 
   const draw = useCallback(
     (ctx: CanvasRenderingContext2D, w: number, h: number) => {
       if (!tex) return;
 
-      // Inset proportional to border texture thickness
-      const pad = Math.round(h * 0.12);
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(pad, pad, w - pad * 2, h - pad * 2);
-      ctx.clip();
-      const bgPattern = ctx.createPattern(tex.bg, "repeat");
-      if (bgPattern) {
-        ctx.fillStyle = bgPattern;
-        ctx.fillRect(pad, pad, w - pad * 2, h - pad * 2);
-      }
-      ctx.restore();
-
-      // Tiled fill (4px inset matches original renderer)
-      const fillPx = ((w - pad * 2) * pct) / 100;
-      if (fillPx > 0) {
-        const pattern = ctx.createPattern(tex.fill, "repeat");
-        if (pattern) {
-          ctx.save();
-          ctx.beginPath();
-          ctx.rect(pad, pad, fillPx, h - pad * 2);
-          ctx.clip();
-          ctx.fillStyle = pattern;
-          ctx.fillRect(pad, pad, fillPx, h - pad * 2);
-          ctx.restore();
-        }
+      // Tiled background
+      const bgPat = ctx.createPattern(tex.bg, "repeat");
+      if (bgPat) {
+        ctx.fillStyle = bgPat;
+        ctx.fillRect(0, 0, w, h);
       }
 
-      // Border
-      ctx.drawImage(tex.border, 0, 0, w, h);
+      // Fill (stretched to progress width)
+      const fillW = (w * pct) / 100;
+      const inset = h * 0.2;
+      if (fillW > 0) {
+        ctx.drawImage(
+          tex.fill,
+          0,
+          0,
+          tex.fill.width,
+          tex.fill.height,
+          0,
+          inset,
+          fillW,
+          h - inset * 2,
+        );
+      }
 
-      // Glass overlay (additive blend)
+      // Border overlay
+      ctx.drawImage(
+        tex.border,
+        0,
+        0,
+        tex.border.width,
+        tex.border.height,
+        0,
+        0,
+        w,
+        h,
+      );
+
+      // Glass overlay
       ctx.save();
-      ctx.globalCompositeOperation = "lighter";
-      ctx.globalAlpha = 0.6;
-      ctx.drawImage(tex.glass, 0, 0, w, h);
+      ctx.globalAlpha = 1;
+      ctx.drawImage(
+        tex.glass,
+        0,
+        0,
+        tex.glass.width,
+        tex.glass.height,
+        0,
+        0,
+        w,
+        h,
+      );
       ctx.restore();
+
+      // Glow at fill edge (additive blend)
+      if (fillW > 0 && pct < 100) {
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        const glowW = Math.min(h * 1.5, w * 0.15);
+        const glowX = fillW - glowW / 2;
+        ctx.drawImage(
+          tex.glow,
+          0,
+          0,
+          tex.glow.width,
+          tex.glow.height,
+          glowX,
+          0,
+          glowW,
+          h,
+        );
+        ctx.restore();
+      }
     },
     [tex, pct],
   );
@@ -66,7 +102,7 @@ export default function LoadingBar({ progress }: Props) {
   useCanvasRenderer(canvasRef, draw, [tex, pct]);
 
   return (
-    <div className="wc-loading-bar">
+    <div className="loading-bar-composite">
       <canvas
         ref={canvasRef}
         style={{
@@ -76,7 +112,7 @@ export default function LoadingBar({ progress }: Props) {
           height: "100%",
         }}
       />
-      <div className="wc-lb-text">{Math.floor(progress)}%</div>
+      <div className="lb-text">{Math.floor(pct)}%</div>
     </div>
   );
 }
