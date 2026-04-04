@@ -401,7 +401,7 @@ function App() {
 
       {/* Site logo */}
       <div className="demo-site-logo">
-        <img src="/site-logo.png" alt="Warcraft III UI" />
+        <img src="./site-logo.png" alt="Warcraft III UI" />
       </div>
 
       {/* Race selector */}
