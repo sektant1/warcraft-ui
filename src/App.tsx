@@ -27,8 +27,11 @@ import {
   SectionTitle,
   Heading,
   BlpIcon,
+  Table,
   RACES,
   type Race,
+  type TableColumn,
+  type TableRowDef,
 } from "../lib/main";
 import type { CommandSlot } from "./components/CommandCard/CommandCard";
 
@@ -352,6 +355,141 @@ const HERO_COMMAND_CARDS: Record<Race, CommandSlot[]> = {
   ],
 };
 
+const HERO_TABLE_COLUMNS: TableColumn[] = [
+  {
+    key: "hero",
+    header: "Hero",
+    headerTooltip: { content: <span style={{ color: "#d8d0b8" }}>Race hero unit</span> },
+  },
+  {
+    key: "gold",
+    header: "Gold",
+    align: "center",
+    headerTooltip: { content: <span style={{ color: "#fcd312" }}>Gold cost to summon</span> },
+  },
+  {
+    key: "lumber",
+    header: "Lumber",
+    align: "center",
+    headerTooltip: { content: <span style={{ color: "#00c000" }}>Lumber cost to summon</span> },
+  },
+  { key: "hp", header: "HP", align: "right" },
+  { key: "mp", header: "MP", align: "right" },
+  { key: "attack", header: "Attack", align: "right" },
+];
+
+const HERO_TABLE_ROWS: TableRowDef[] = [
+  {
+    id: "archmage",
+    cells: {
+      hero: {
+        iconPath: "buttons/command/BTNHeroPaladin.blp",
+        iconSize: 22,
+        value: "Archmage",
+        tooltip: {
+          icon: <BlpIcon path="buttons/command/BTNHeroPaladin.blp" size={38} />,
+          content: (
+            <>
+              <div><strong style={{ color: "#fcd312" }}>Archmage</strong></div>
+              <div style={{ color: "#809fff", fontSize: 11 }}>Human Hero</div>
+              <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>
+                Master of the arcane arts. Excels at area denial and mana support.
+              </div>
+            </>
+          ),
+        },
+      },
+      gold: { resourceIcon: "gold", value: 425 },
+      lumber: { resourceIcon: "lumber", value: 100 },
+      hp: { value: 625 },
+      mp: { value: 300 },
+      attack: { value: "23–29" },
+    },
+  },
+  {
+    id: "blademaster",
+    highlighted: true,
+    cells: {
+      hero: {
+        iconPath: "buttons/command/BTNHeroBlademaster.blp",
+        iconSize: 22,
+        value: "Blademaster",
+        tooltip: {
+          icon: <BlpIcon path="buttons/command/BTNHeroBlademaster.blp" size={38} />,
+          content: (
+            <>
+              <div><strong style={{ color: "#fcd312" }}>Blademaster</strong></div>
+              <div style={{ color: "#809fff", fontSize: 11 }}>Orc Hero</div>
+              <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>
+                Swift melee duelist with high burst damage and Wind Walk.
+              </div>
+            </>
+          ),
+        },
+      },
+      gold: { resourceIcon: "gold", value: 425 },
+      lumber: { resourceIcon: "lumber", value: 100 },
+      hp: { value: 750 },
+      mp: { value: 225 },
+      attack: { value: "29–39" },
+    },
+  },
+  {
+    id: "demonhunter",
+    cells: {
+      hero: {
+        iconPath: "buttons/command/BTNHeroDemonHunter.blp",
+        iconSize: 22,
+        value: "Demon Hunter",
+        tooltip: {
+          icon: <BlpIcon path="buttons/command/BTNHeroDemonHunter.blp" size={38} />,
+          content: (
+            <>
+              <div><strong style={{ color: "#fcd312" }}>Demon Hunter</strong></div>
+              <div style={{ color: "#809fff", fontSize: 11 }}>Night Elf Hero</div>
+              <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>
+                Agile anti-caster with Mana Burn and Metamorphosis ultimate.
+              </div>
+            </>
+          ),
+        },
+      },
+      gold: { resourceIcon: "gold", value: 425 },
+      lumber: { resourceIcon: "lumber", value: 100 },
+      hp: { value: 700 },
+      mp: { value: 270 },
+      attack: { value: "26–36" },
+    },
+  },
+  {
+    id: "deathknight",
+    cells: {
+      hero: {
+        iconPath: "buttons/command/BTNHeroDeathKnight.blp",
+        iconSize: 22,
+        value: "Death Knight",
+        tooltip: {
+          icon: <BlpIcon path="buttons/command/BTNHeroDeathKnight.blp" size={38} />,
+          content: (
+            <>
+              <div><strong style={{ color: "#fcd312" }}>Death Knight</strong></div>
+              <div style={{ color: "#809fff", fontSize: 11 }}>Undead Hero</div>
+              <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>
+                Durable sustain hero with Unholy Aura and Animate Dead ultimate.
+              </div>
+            </>
+          ),
+        },
+      },
+      gold: { resourceIcon: "gold", value: 425 },
+      lumber: { resourceIcon: "lumber", value: 100 },
+      hp: { value: 775 },
+      mp: { value: 225 },
+      attack: { value: "32–38" },
+    },
+  },
+];
+
 const DIFFICULTIES = ["Easy", "Normal", "Hard", "Insane"] as const;
 const MAP_LIST = [
   "Lost Temple",
@@ -605,6 +743,14 @@ function App() {
                 Tooltips still work without an icon.
               </div>
             </Tooltip>
+          </SectionTitle>
+
+          <SectionTitle title="Table">
+            <Table
+              columns={HERO_TABLE_COLUMNS}
+              rows={HERO_TABLE_ROWS}
+              showRowNumbers
+            />
           </SectionTitle>
         </div>
       </main>

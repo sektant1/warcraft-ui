@@ -88,3 +88,12 @@ export { default as Heading } from "../src/components/Heading/Heading";
 
 // Components — icons
 export { default as BlpIcon } from "../src/components/BlpIcon/BlpIcon";
+
+// Components — table
+export { default as Table } from "../src/components/Table/Table";
+export type {
+  TableColumn,
+  TableRowDef,
+  TableCellDef,
+  TableTooltip,
+} from "../src/components/Table/Table";

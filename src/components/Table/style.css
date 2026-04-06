@@ -1,0 +1,155 @@
+.wc-table-wrap {
+  overflow: hidden;
+  border-radius: 3px;
+  border: 1px solid rgba(252, 211, 18, 0.25);
+  background: rgba(6, 6, 16, 0.88);
+}
+
+.wc-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  font-family: "Friz Quadrata", "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: 13px;
+  color: #d8d0b8;
+}
+
+/* ── Header ─────────────────────────────────────────────── */
+
+.wc-table-thead-row {
+  background: linear-gradient(180deg, rgba(30, 22, 6, 0.95) 0%, rgba(20, 14, 2, 0.98) 100%);
+  border-bottom: 1px solid rgba(252, 211, 18, 0.45);
+}
+
+.wc-table-th {
+  position: relative;
+  padding: 7px 10px;
+  color: var(--wc3-gold, #fcd312);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.9);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+}
+
+.wc-table-th--num {
+  width: 32px;
+  color: rgba(252, 211, 18, 0.5);
+  text-align: center;
+}
+
+.wc-table-th-label {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Rows ────────────────────────────────────────────────── */
+
+.wc-table-tr {
+  position: relative;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background 0.1s ease;
+}
+
+.wc-table-tr:last-child {
+  border-bottom: none;
+}
+
+.wc-table-tr--hovered {
+  background: rgba(252, 211, 18, 0.06);
+}
+
+.wc-table-tr--highlighted {
+  background: rgba(252, 211, 18, 0.1);
+}
+
+.wc-table-tr--highlighted.wc-table-tr--hovered {
+  background: rgba(252, 211, 18, 0.16);
+}
+
+/* Alternating rows (even) */
+.wc-table-tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.wc-table-tr:nth-child(even).wc-table-tr--hovered {
+  background: rgba(252, 211, 18, 0.07);
+}
+
+/* ── Cells ───────────────────────────────────────────────── */
+
+.wc-table-td {
+  position: relative;
+  padding: 6px 10px;
+  vertical-align: middle;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.wc-table-td--num {
+  text-align: center;
+  color: rgba(252, 211, 18, 0.4);
+  font-size: 11px;
+  width: 32px;
+}
+
+.wc-table-cell-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.wc-table-cell-text {
+  line-height: 1.2;
+}
+
+/* ── BlpIcon inside table ────────────────────────────────── */
+
+.wc-table-blp-icon {
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+
+/* ── Resource icon (canvas) ──────────────────────────────── */
+
+.wc-table-res-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  image-rendering: pixelated;
+}
+
+/* ── Tooltip positioning ─────────────────────────────────── */
+
+.wc-table-tooltip-wrap {
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 200;
+  width: max-content;
+  max-width: 280px;
+  pointer-events: none;
+}
+
+/* Row-level tooltip anchored to the right */
+.wc-table-tooltip-wrap--row {
+  left: auto;
+  right: 0;
+  transform: none;
+  bottom: calc(100% + 6px);
+}
+
+/* The td used as anchor for row tooltips must be position:relative */
+.wc-table-row-tooltip-cell {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 0;
+  border: none;
+  pointer-events: none;
+}
