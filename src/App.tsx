@@ -359,20 +359,26 @@ const HERO_TABLE_COLUMNS: TableColumn[] = [
   {
     key: "hero",
     header: "Hero",
-    width: "38%",
-    headerTooltip: { content: <span style={{ color: "#d8d0b8" }}>Race hero unit</span> },
+    width: "28%",
+    headerTooltip: {
+      content: <span style={{ color: "#d8d0b8" }}>Race hero unit</span>,
+    },
   },
   {
     key: "gold",
     header: "Gold",
     align: "center",
-    headerTooltip: { content: <span style={{ color: "#fcd312" }}>Gold cost to summon</span> },
+    headerTooltip: {
+      content: <span style={{ color: "#fcd312" }}>Gold cost to summon</span>,
+    },
   },
   {
     key: "lumber",
     header: "Lumber",
     align: "center",
-    headerTooltip: { content: <span style={{ color: "#00c000" }}>Lumber cost to summon</span> },
+    headerTooltip: {
+      content: <span style={{ color: "#00c000" }}>Lumber cost to summon</span>,
+    },
   },
   { key: "hp", header: "HP", align: "right" },
   { key: "mp", header: "MP", align: "right" },
@@ -391,10 +397,13 @@ const HERO_TABLE_ROWS: TableRowDef[] = [
           icon: <BlpIcon path="buttons/command/BTNHeroPaladin.blp" size={38} />,
           content: (
             <>
-              <div><strong style={{ color: "#fcd312" }}>Archmage</strong></div>
+              <div>
+                <strong style={{ color: "#fcd312" }}>Archmage</strong>
+              </div>
               <div style={{ color: "#809fff", fontSize: 11 }}>Human Hero</div>
               <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>
-                Master of the arcane arts. Excels at area denial and mana support.
+                Master of the arcane arts. Excels at area denial and mana
+                support.
               </div>
             </>
           ),
@@ -416,10 +425,14 @@ const HERO_TABLE_ROWS: TableRowDef[] = [
         iconSize: 22,
         value: "Blademaster",
         tooltip: {
-          icon: <BlpIcon path="buttons/command/BTNHeroBlademaster.blp" size={38} />,
+          icon: (
+            <BlpIcon path="buttons/command/BTNHeroBlademaster.blp" size={38} />
+          ),
           content: (
             <>
-              <div><strong style={{ color: "#fcd312" }}>Blademaster</strong></div>
+              <div>
+                <strong style={{ color: "#fcd312" }}>Blademaster</strong>
+              </div>
               <div style={{ color: "#809fff", fontSize: 11 }}>Orc Hero</div>
               <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>
                 Swift melee duelist with high burst damage and Wind Walk.
@@ -443,11 +456,17 @@ const HERO_TABLE_ROWS: TableRowDef[] = [
         iconSize: 22,
         value: "Demon Hunter",
         tooltip: {
-          icon: <BlpIcon path="buttons/command/BTNHeroDemonHunter.blp" size={38} />,
+          icon: (
+            <BlpIcon path="buttons/command/BTNHeroDemonHunter.blp" size={38} />
+          ),
           content: (
             <>
-              <div><strong style={{ color: "#fcd312" }}>Demon Hunter</strong></div>
-              <div style={{ color: "#809fff", fontSize: 11 }}>Night Elf Hero</div>
+              <div>
+                <strong style={{ color: "#fcd312" }}>Demon Hunter</strong>
+              </div>
+              <div style={{ color: "#809fff", fontSize: 11 }}>
+                Night Elf Hero
+              </div>
               <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>
                 Agile anti-caster with Mana Burn and Metamorphosis ultimate.
               </div>
@@ -470,10 +489,14 @@ const HERO_TABLE_ROWS: TableRowDef[] = [
         iconSize: 22,
         value: "Death Knight",
         tooltip: {
-          icon: <BlpIcon path="buttons/command/BTNHeroDeathKnight.blp" size={38} />,
+          icon: (
+            <BlpIcon path="buttons/command/BTNHeroDeathKnight.blp" size={38} />
+          ),
           content: (
             <>
-              <div><strong style={{ color: "#fcd312" }}>Death Knight</strong></div>
+              <div>
+                <strong style={{ color: "#fcd312" }}>Death Knight</strong>
+              </div>
               <div style={{ color: "#809fff", fontSize: 11 }}>Undead Hero</div>
               <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>
                 Durable sustain hero with Unholy Aura and Animate Dead ultimate.
