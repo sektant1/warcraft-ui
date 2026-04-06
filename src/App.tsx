@@ -359,6 +359,7 @@ const HERO_TABLE_COLUMNS: TableColumn[] = [
   {
     key: "hero",
     header: "Hero",
+    width: "38%",
     headerTooltip: { content: <span style={{ color: "#d8d0b8" }}>Race hero unit</span> },
   },
   {
@@ -746,11 +747,13 @@ function App() {
           </SectionTitle>
 
           <SectionTitle title="Table">
-            <Table
-              columns={HERO_TABLE_COLUMNS}
-              rows={HERO_TABLE_ROWS}
-              showRowNumbers
-            />
+            <div style={{ width: 520 }}>
+              <Table
+                columns={HERO_TABLE_COLUMNS}
+                rows={HERO_TABLE_ROWS}
+                showRowNumbers
+              />
+            </div>
           </SectionTitle>
         </div>
       </main>
