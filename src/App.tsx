@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 import {
-  GlueSmallButton,
   GlueScreenButton,
   GlueBorderedButton,
   GlueMenuButton,
@@ -514,7 +513,6 @@ const HERO_TABLE_ROWS: TableRowDef[] = [
   },
 ];
 
-const DIFFICULTIES = ["Easy", "Normal", "Hard", "Insane"] as const;
 const MAP_LIST = [
   "Lost Temple",
   "Turtle Rock",
@@ -533,7 +531,6 @@ function App() {
   const [musicVolume, setMusicVolume] = useState(0.7);
   const [sfxVolume, setSfxVolume] = useState(0.5);
   const [playerName, setPlayerName] = useState("");
-  const [difficulty, setDifficulty] = useState<string>("Normal");
   const [selectedMap, setSelectedMap] = useState<string>("Lost Temple");
   const [hpPct, setHpPct] = useState(0);
   const [mpPct, setMpPct] = useState(0);
