@@ -13,7 +13,7 @@ dist-demo
 dist-ssr
 *.local
 .npmrc
-demo
+/demo/
 .remember
 .playwright
 .playwright-cli
@@ -30,3 +30,6 @@ public
 *.njsproj
 *.sln
 *.sw?
+
+# Packed release artifacts
+*.tgz

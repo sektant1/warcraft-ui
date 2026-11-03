@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { resolveAssetPath } from "../../utils/config";
 import { ModelRenderer, decodeBLP, getBLPImageData, parseMDX } from "war3-model";
 import { mat3, mat4, quat, vec3 } from "gl-matrix";
 
@@ -16,7 +17,7 @@ function normaliseKey(textureImage: string): string {
 async function loadModel(modelPath: string): Promise<ModelType> {
   const cached = modelCache.get(modelPath);
   if (cached) return cached;
-  const res = await fetch(modelPath);
+  const res = await fetch(resolveAssetPath(modelPath));
   if (!res.ok) throw new Error(`ItemModel: failed to fetch ${modelPath}`);
   const model = parseMDX(await res.arrayBuffer());
   modelCache.set(modelPath, model);
@@ -26,7 +27,7 @@ async function loadModel(modelPath: string): Promise<ModelType> {
 async function loadBLPMips(path: string): Promise<ImageData[]> {
   const cached = blpCache.get(path);
   if (cached) return cached;
-  const res = await fetch(path);
+  const res = await fetch(resolveAssetPath(path));
   if (!res.ok) throw new Error(`ItemModel: failed to fetch texture ${path}`);
   const blp = decodeBLP(await res.arrayBuffer());
   const mips: ImageData[] = [];

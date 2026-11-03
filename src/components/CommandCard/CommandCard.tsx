@@ -38,12 +38,13 @@ interface Props {
 function CommandButton({
   slot,
   size,
+  onActiveChange,
 }: {
   slot: CommandSlot;
   size: number;
+  onActiveChange: (active: boolean) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [hovered, setHovered] = useState(false);
 
   const paths: Record<string, string> = {
     border: "buttons/command/human-multipleselection-border.blp",
@@ -122,8 +123,10 @@ function CommandButton({
       className={`cmd-btn${stateClass}`}
       style={{ width: size, height: size }}
       aria-label={`${slot.label || ""}${slot.hotkey ? ` (${slot.hotkey})` : ""}`}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => onActiveChange(true)}
+      onMouseLeave={() => onActiveChange(false)}
+      onFocus={() => onActiveChange(true)}
+      onBlur={() => onActiveChange(false)}
     >
       <canvas ref={canvasRef} className="cmd-btn-canvas" />
       {slot.hotkey && (
@@ -131,66 +134,48 @@ function CommandButton({
           {slot.hotkey}
         </span>
       )}
-      {hovered && slot.tooltip && (
-        <div className="cmd-btn-tooltip">
-          <Tooltip icon={slot.iconPath ? <BlpIcon path={slot.iconPath} size={38} /> : undefined}>
-            <div>
-              <strong style={{ color: "#fcd312" }}>{slot.tooltip.name}</strong>
-              {slot.hotkey && <span style={{ color: "#808080", marginLeft: 6, fontSize: 11 }}>({slot.hotkey})</span>}
-            </div>
-            {slot.tooltip.type && (
-              <div style={{ color: "#00c000", fontSize: 11 }}>{slot.tooltip.type}</div>
-            )}
-            <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>
-              {slot.tooltip.description}
-            </div>
-            {(slot.tooltip.manaCost || slot.tooltip.cooldown) && (
-              <div style={{ marginTop: 4, fontSize: 11, color: "#809fff" }}>
-                {slot.tooltip.manaCost != null && <span>Mana: {slot.tooltip.manaCost}</span>}
-                {slot.tooltip.manaCost != null && slot.tooltip.cooldown != null && <span>&nbsp;&nbsp;</span>}
-                {slot.tooltip.cooldown != null && <span>Cooldown: {slot.tooltip.cooldown}s</span>}
-              </div>
-            )}
-          </Tooltip>
-        </div>
-      )}
     </button>
   );
 }
 
-/** Create an array of empty command card slots */
-export function createEmptySlots(count = 12): CommandSlot[] {
-  return Array.from({ length: count }, () => ({ state: "empty" as const }));
+function CommandTooltip({ slot }: { slot: CommandSlot }) {
+  const tt = slot.tooltip!;
+  return (
+    <Tooltip icon={slot.iconPath ? <BlpIcon path={slot.iconPath} size={38} /> : undefined}>
+      <div>
+        <strong style={{ color: "#fcd312" }}>{tt.name}</strong>
+        {slot.hotkey && (
+          <span style={{ color: "#808080", marginLeft: 6, fontSize: 11 }}>({slot.hotkey})</span>
+        )}
+      </div>
+      {tt.type && <div style={{ color: "#00c000", fontSize: 11 }}>{tt.type}</div>}
+      <div style={{ marginTop: 4, color: "#ccc", fontSize: 12 }}>{tt.description}</div>
+      {(tt.manaCost != null || tt.cooldown != null) && (
+        <div style={{ marginTop: 4, fontSize: 11, color: "#809fff" }}>
+          {tt.manaCost != null && <span>Mana: {tt.manaCost}</span>}
+          {tt.manaCost != null && tt.cooldown != null && <span>&nbsp;&nbsp;</span>}
+          {tt.cooldown != null && <span>Cooldown: {tt.cooldown}s</span>}
+        </div>
+      )}
+    </Tooltip>
+  );
 }
 
-/** Default Blademaster command card slots for showcase */
-export const BLADEMASTER_SLOTS: CommandSlot[] = [
-  { hotkey: "Q", label: "Move", iconPath: "buttons/command/BTNMove.blp", state: "ready" },
-  { hotkey: "W", label: "Stop", iconPath: "buttons/command/BTNStop.blp", state: "ready" },
-  { hotkey: "E", label: "Hold Position", iconPath: "buttons/command/BTNHoldPosition.blp", state: "ready" },
-  { hotkey: "R", label: "Attack", iconPath: "buttons/command/BTNAttack.blp", state: "ready" },
-  { hotkey: "A", label: "Patrol", iconPath: "buttons/command/BTNPatrol.blp", state: "ready" },
-  { label: "Empty", state: "empty" },
-  { label: "Empty", state: "empty" },
-  { hotkey: "F", label: "Learn Skill", iconPath: "buttons/command/BTNSkillz.blp", state: "levelup" },
-  { hotkey: "Z", label: "Wind Walk", iconPath: "buttons/command/BTNWindWalkOn.blp", state: "active" },
-  { hotkey: "X", label: "Mirror Image", iconPath: "buttons/command/BTNMirrorImage.blp", state: "ready" },
-  { hotkey: "C", label: "Critical Strike", iconPath: "buttons/command/BTNCriticalStrike.blp", state: "passive" },
-  { hotkey: "V", label: "Bladestorm", iconPath: "buttons/command/BTNWhirlwind.blp", state: "ready" },
-];
-
 export default function CommandCard({ slots, cellSize = 64 }: Props) {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const displaySlots = slots.slice(0, 12);
   // Pad to 12 if fewer
   while (displaySlots.length < 12) {
     displaySlots.push({ state: "empty" });
   }
 
+  const activeSlot = activeIndex != null ? displaySlots[activeIndex] : undefined;
+
   return (
     <div className="command-card-preview">
       <div
         className="command-card-grid"
-        role="grid"
+        role="group"
         aria-label="Command card"
         style={{
           gridTemplateColumns: `repeat(4, ${cellSize}px)`,
@@ -199,9 +184,21 @@ export default function CommandCard({ slots, cellSize = 64 }: Props) {
       >
         {displaySlots.map((slot, i) => (
           <div key={i} className="command-card-cell">
-            <CommandButton slot={slot} size={cellSize} />
+            <CommandButton
+              slot={slot}
+              size={cellSize}
+              onActiveChange={(active) =>
+                setActiveIndex((cur) => (active ? i : cur === i ? null : cur))
+              }
+            />
           </div>
         ))}
+        {/* Anchored to the whole grid (as in-game) so it never covers buttons */}
+        {activeSlot?.tooltip && activeSlot.state !== "empty" && (
+          <div className="cmd-card-tooltip" role="tooltip">
+            <CommandTooltip slot={activeSlot} />
+          </div>
+        )}
       </div>
     </div>
   );

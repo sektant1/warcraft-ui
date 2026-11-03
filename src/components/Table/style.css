@@ -122,34 +122,3 @@
   flex-shrink: 0;
   image-rendering: pixelated;
 }
-
-/* ── Tooltip positioning ─────────────────────────────────── */
-
-.wc-table-tooltip-wrap {
-  position: absolute;
-  bottom: calc(100% + 6px);
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 200;
-  width: max-content;
-  max-width: 280px;
-  pointer-events: none;
-}
-
-/* Row-level tooltip anchored to the right */
-.wc-table-tooltip-wrap--row {
-  left: auto;
-  right: 0;
-  transform: none;
-  bottom: calc(100% + 6px);
-}
-
-/* The td used as anchor for row tooltips must be position:relative */
-.wc-table-row-tooltip-cell {
-  position: absolute;
-  right: 0;
-  top: 0;
-  padding: 0;
-  border: none;
-  pointer-events: none;
-}

@@ -68,18 +68,49 @@ export function loadBlpCanvas(path: string): Promise<CanvasSource> {
   return promise;
 }
 
+/**
+ * Load the first texture that decodes successfully from a list of candidates.
+ * Used for race-specific textures that only ship for some races
+ * (e.g. bars/orc-statbar-color.blp → bars/human-statbar-color.blp).
+ */
+export async function loadFirstBlpCanvas(
+  candidates: readonly string[],
+): Promise<CanvasSource> {
+  let lastError: unknown = new Error("No texture candidates given");
+  for (const path of candidates) {
+    try {
+      return await loadBlpCanvas(path);
+    } catch (err) {
+      lastError = err;
+    }
+  }
+  throw lastError;
+}
+
+/** A texture path, or an ordered list of fallback paths (first that loads wins). */
+export type BlpSource = string | readonly string[];
+
 export function useBlpTextures<K extends string>(
-  paths: Record<K, string>,
+  paths: Record<K, BlpSource>,
 ): Record<K, CanvasSource> | null {
   const [textures, setTextures] = useState<Record<K, CanvasSource> | null>(
     null,
   );
-  const pathsKey = Object.values<string>(paths).join("\n");
+  const pathsKey = (Object.entries(paths) as [string, BlpSource][])
+    .map(([k, v]) => `${k}=${typeof v === "string" ? v : v.join("|")}`)
+    .join("\n");
 
   useEffect(() => {
     let cancelled = false;
     const keys = Object.keys(paths) as K[];
-    Promise.all(keys.map((k) => loadBlpCanvas(paths[k])))
+    Promise.all(
+      keys.map((k) => {
+        const src = paths[k];
+        return typeof src === "string"
+          ? loadBlpCanvas(src)
+          : loadFirstBlpCanvas(src);
+      }),
+    )
       .then((canvases) => {
         if (cancelled) return;
         const result = {} as Record<K, CanvasSource>;
@@ -92,6 +123,8 @@ export function useBlpTextures<K extends string>(
     return () => {
       cancelled = true;
     };
+    // `paths` is a fresh object every render; pathsKey captures its content.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathsKey]);
 
   return textures;

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { resolveAssetPath } from "../../utils/config";
 import {
   ModelRenderer,
   decodeBLP,
@@ -7,9 +8,14 @@ import {
 } from "war3-model";
 import { mat3, mat4, quat, vec3 } from "gl-matrix";
 import type { Race } from "../../utils/types";
+import { healthColor } from "../../utils/healthColor";
 import "./style.css";
 
 type ModelType = ReturnType<typeof parseMDX>;
+type InitForConfig = (
+  modelPath: string,
+  textures: Record<string, string>,
+) => Promise<void>;
 
 interface HeroConfig {
   modelPath: string;
@@ -82,7 +88,7 @@ function resolveTexturePath(
 async function loadModelByPath(modelPath: string): Promise<ModelType> {
   const cached = modelCache.get(modelPath);
   if (cached) return cached;
-  const res = await fetch(modelPath);
+  const res = await fetch(resolveAssetPath(modelPath));
   if (!res.ok)
     throw new Error(`HeroPortraitModel: failed to load ${modelPath}`);
   const model = parseMDX(await res.arrayBuffer());
@@ -93,7 +99,7 @@ async function loadModelByPath(modelPath: string): Promise<ModelType> {
 async function loadBLPMips(path: string): Promise<ImageData[]> {
   const cached = blpCache.get(path);
   if (cached) return cached;
-  const res = await fetch(path);
+  const res = await fetch(resolveAssetPath(path));
   if (!res.ok)
     throw new Error(`HeroPortraitModel: failed to load texture ${path}`);
   const blp = decodeBLP(await res.arrayBuffer());
@@ -139,8 +145,23 @@ function findPortraitSequenceIndex(model: ModelType): number {
   return 0;
 }
 
+export interface PortraitStat {
+  current: number;
+  max: number;
+}
+
 export interface HeroPortraitModelProps {
   race: Race;
+  /** Hit points shown in the frame's first slot (colour follows health %). */
+  hp?: PortraitStat;
+  /** Mana shown in the frame's second slot. */
+  mp?: PortraitStat;
+}
+
+function formatStat({ current, max }: PortraitStat): string {
+  const c = Math.max(0, Math.round(current));
+  const m = Math.max(0, Math.round(max));
+  return `${Math.min(c, m)} / ${m}`;
 }
 
 export default function HeroPortraitModel(props: HeroPortraitModelProps) {
@@ -162,6 +183,10 @@ export default function HeroPortraitModel(props: HeroPortraitModelProps) {
     cameraFov: 0.691111,
     cameraNear: 8,
     cameraFar: 1800,
+    /** Loader bound to the live GL context; set by the setup effect. */
+    initForConfig: null as InitForConfig | null,
+    /** Model currently loaded/loading — avoids a duplicate load on mount. */
+    loadedModelPath: "",
   });
 
   useEffect(() => {
@@ -319,8 +344,8 @@ export default function HeroPortraitModel(props: HeroPortraitModelProps) {
       );
     };
 
-    // Store for prop-change effect
-    (s as any)._initForConfig = initForConfig;
+    // Exposed to the race-change effect below
+    s.initForConfig = initForConfig;
 
     s.gl = canvas.getContext("webgl2", {
       alpha: true,
@@ -343,6 +368,7 @@ export default function HeroPortraitModel(props: HeroPortraitModelProps) {
     s.resizeObserver = new ResizeObserver(() => resizeCanvas());
     s.resizeObserver.observe(canvas);
     startRenderLoop();
+    s.loadedModelPath = modelPath;
     void initForConfig(modelPath, textures).catch(console.error);
 
     return () => {
@@ -351,24 +377,26 @@ export default function HeroPortraitModel(props: HeroPortraitModelProps) {
       cancelAnimationFrame(s.rafId);
       s.resizeObserver?.disconnect();
       destroyRenderer();
+      s.initForConfig = null;
+      s.loadedModelPath = "";
     };
+    // GL setup runs once; race changes are handled by the effect below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Reload when modelPath or textures change
+  // Swap the model when the race changes
   useEffect(() => {
-    if (!modelPath) return;
     const s = stateRef.current;
-    if (!s.gl || s.disposed) return;
-    const fn = (s as any)._initForConfig as
-      | ((modelPath: string, textures: Record<string, string>) => Promise<void>)
-      | undefined;
-    if (fn) void fn(modelPath, textures).catch(console.error);
-  }, [props.race]);
+    if (!modelPath || !s.initForConfig || s.disposed) return;
+    if (s.loadedModelPath === modelPath) return;
+    s.loadedModelPath = modelPath;
+    void s.initForConfig(modelPath, textures).catch(console.error);
+  }, [modelPath, textures]);
 
   if (!modelPath) return null;
 
-  const maskSrc = `./console/${props.race}/${props.race}UIPortraitWindowMask.png`;
-  const frameSrc = `./console/${props.race}/${props.race}UIPortraitFrameCrop.png`;
+  const maskSrc = resolveAssetPath(`console/${props.race}/${props.race}UIPortraitWindowMask.png`);
+  const frameSrc = resolveAssetPath(`console/${props.race}/${props.race}UIPortraitFrameCrop.png`);
 
   return (
     <div className="hero-portrait">
@@ -382,6 +410,27 @@ export default function HeroPortraitModel(props: HeroPortraitModelProps) {
         <canvas ref={canvasRef} className="hero-portrait__canvas" />
       </div>
       <img src={frameSrc} alt="" className="hero-portrait__frame" />
+      {props.hp && (
+        <div
+          className="hero-portrait__stat hero-portrait__stat--hp"
+          style={{
+            color: healthColor(
+              props.hp.max > 0 ? (props.hp.current / props.hp.max) * 100 : 0,
+            ),
+          }}
+          aria-label={`Hit points ${formatStat(props.hp)}`}
+        >
+          {formatStat(props.hp)}
+        </div>
+      )}
+      {props.mp && (
+        <div
+          className="hero-portrait__stat hero-portrait__stat--mp"
+          aria-label={`Mana ${formatStat(props.mp)}`}
+        >
+          {formatStat(props.mp)}
+        </div>
+      )}
     </div>
   );
 }

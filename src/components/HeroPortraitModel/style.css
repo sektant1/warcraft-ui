@@ -3,6 +3,42 @@
   width: 100%;
   max-width: 390px;
   aspect-ratio: 130 / 160;
+  container-type: inline-size;
+}
+
+/*
+ * The frame art (130×160) has two stat slots under the portrait window:
+ * slot 1 ≈ y 124–137, slot 2 ≈ y 143–155. Positions are in % of the frame
+ * so they track any rendered size.
+ */
+.hero-portrait__stat {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  height: 8.5%;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family:
+    "Friz Quadrata", "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: clamp(9px, 7cqw, 22px);
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow:
+    1px 1px 0 #000,
+    0 0 3px #000;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+.hero-portrait__stat--hp {
+  top: 77.2%;
+}
+
+.hero-portrait__stat--mp {
+  top: 89%;
+  color: #c3dbff;
 }
 
 .hero-portrait__window {

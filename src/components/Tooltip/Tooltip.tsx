@@ -20,11 +20,18 @@ export default function Tooltip({ icon, children }: Props) {
     (ctx: CanvasRenderingContext2D, w: number, h: number) => {
       if (!tex) return;
 
+      // The background texture is translucent (WC3 draws it over the 3D
+      // world); lay a near-opaque base first so content underneath —
+      // command-card icons, hotkeys — can't bleed through and hurt legibility.
+      const inset = 2;
+      ctx.fillStyle = "rgba(2, 3, 10, 0.92)";
+      ctx.fillRect(inset, inset, w - inset * 2, h - inset * 2);
+
       // Tiled background
       const pattern = ctx.createPattern(tex.bg, "repeat");
       if (pattern) {
         ctx.fillStyle = pattern;
-        ctx.fillRect(0, 0, w, h);
+        ctx.fillRect(inset, inset, w - inset * 2, h - inset * 2);
       }
 
       // Nine-slice border from 8-cell horizontal atlas

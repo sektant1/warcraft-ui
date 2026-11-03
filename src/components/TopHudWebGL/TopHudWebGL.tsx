@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { resolveAssetPath } from "../../utils/config";
 import type { Race } from "../../utils/types";
 import { RACE_PREFIXES } from "../../state/race";
 
@@ -26,7 +27,7 @@ const SEAM_PX = 1;
 
 function topTilePath(race: Race, index: TileIndex): string {
   const tile = RACE_PREFIXES[race].tile;
-  return `./console/${race}/${tile}UITile0${index}.png`;
+  return resolveAssetPath(`console/${race}/${tile}UITile0${index}.png`);
 }
 
 function compileShader(
@@ -112,12 +113,17 @@ interface GLState {
   textureCache: Map<string, WebGLTexture>;
   textureLoadCache: Map<string, Promise<WebGLTexture | null>>;
   activeTextures: Record<TileIndex, WebGLTexture> | null;
+  /** Bound to the live GL context by the setup effect. */
+  loadRaceTextures: ((race: Race) => Promise<void>) | null;
+  requestDraw: (() => void) | null;
 }
 
 export default function TopHudWebGL(props: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const propsRef = useRef(props);
-  propsRef.current = props;
+  useEffect(() => {
+    propsRef.current = props;
+  });
 
   const stateRef = useRef<GLState>({
     gl: null,
@@ -133,6 +139,8 @@ export default function TopHudWebGL(props: Props) {
     textureCache: new Map(),
     textureLoadCache: new Map(),
     activeTextures: null,
+    loadRaceTextures: null,
+    requestDraw: null,
   });
 
   useEffect(() => {
@@ -413,8 +421,8 @@ export default function TopHudWebGL(props: Props) {
     };
 
     // Store for use in race/leftOnly effects
-    (stateRef.current as any).loadRaceTextures = loadRaceTextures;
-    (stateRef.current as any).requestDraw = requestDraw;
+    stateRef.current.loadRaceTextures = loadRaceTextures;
+    stateRef.current.requestDraw = requestDraw;
 
     s.gl = canvas.getContext("webgl", {
       alpha: true,
@@ -479,17 +487,12 @@ export default function TopHudWebGL(props: Props) {
   useEffect(() => {
     const s = stateRef.current;
     if (!s.gl || s.destroyed) return;
-    const loadRaceTextures = (s as any).loadRaceTextures as
-      | ((race: Race) => Promise<void>)
-      | undefined;
-    if (loadRaceTextures) void loadRaceTextures(props.race);
+    if (s.loadRaceTextures) void s.loadRaceTextures(props.race);
   }, [props.race]);
 
   // React to leftOnly changes
   useEffect(() => {
-    const s = stateRef.current;
-    const requestDraw = (s as any).requestDraw as (() => void) | undefined;
-    if (requestDraw) requestDraw();
+    stateRef.current.requestDraw?.();
   }, [props.leftOnly]);
 
   return (

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useCurrentRace } from "../../state/race";
 import { loadBlpDataUrl, loadDataUrlImage } from "../../utils/glueButton";
 import type { Race } from "../../utils/types";
@@ -10,7 +10,7 @@ async function loadRaceCursorFrameDataUrl(race: Race): Promise<string> {
   if (cached) return cached;
 
   const promise = (async () => {
-    const atlasDataUrl = await loadBlpDataUrl(`./cursor/${race}Cursor.blp`);
+    const atlasDataUrl = await loadBlpDataUrl(`cursor/${race}Cursor.blp`);
     const atlas = await loadDataUrlImage(atlasDataUrl);
     const columns = 8;
     const rows = 4;
@@ -28,6 +28,8 @@ async function loadRaceCursorFrameDataUrl(race: Race): Promise<string> {
   })();
 
   cursorFrameDataUrlCache.set(race, promise);
+  // Don't cache failures forever — allow a retry on the next race change.
+  promise.catch(() => cursorFrameDataUrlCache.delete(race));
   return promise;
 }
 
@@ -35,62 +37,38 @@ interface Props {
   race?: Race;
 }
 
+/**
+ * Applies the race's WC3 cursor to the whole page through the
+ * `--wc3-game-cursor` CSS variable. Renders nothing itself.
+ */
 export default function CursorOverlay({ race: raceProp }: Props = {}) {
-  const ref = useRef<HTMLDivElement>(null);
   const globalRace = useCurrentRace();
   const race = raceProp ?? globalRace;
 
   useEffect(() => {
-    const el = ref.current!;
-    const onMove = (e: MouseEvent) => {
-      el.style.left = e.clientX + "px";
-      el.style.top = e.clientY + "px";
-    };
-    const onLeave = () => {
-      el.style.display = "none";
-    };
-    const onEnter = () => {
-      el.style.display = "block";
-    };
-
-    document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseleave", onLeave);
-    document.addEventListener("mouseenter", onEnter);
-
-    return () => {
-      document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseleave", onLeave);
-      document.removeEventListener("mouseenter", onEnter);
-    };
-  }, []);
-
-  useEffect(() => {
     let cancelled = false;
+    const root = document.documentElement;
+    root.setAttribute("data-wc3-cursor", "");
 
     void loadRaceCursorFrameDataUrl(race)
       .then((cursorFrameUrl) => {
         if (cancelled) return;
-        document.documentElement.style.setProperty(
+        root.style.setProperty(
           "--wc3-game-cursor",
           `url("${cursorFrameUrl}") 2 2, auto`,
         );
       })
       .catch((err) => {
         console.error(err);
-        document.documentElement.style.setProperty("--wc3-game-cursor", "auto");
+        root.style.setProperty("--wc3-game-cursor", "auto");
       });
 
     return () => {
       cancelled = true;
-      document.documentElement.style.setProperty("--wc3-game-cursor", "auto");
+      root.removeAttribute("data-wc3-cursor");
+      root.style.removeProperty("--wc3-game-cursor");
     };
   }, [race]);
 
-  return (
-    <div
-      ref={ref}
-      id="cursorOverlay"
-      style={{ backgroundImage: `url('war3/Cursor/${race}Cursor.png')` }}
-    />
-  );
+  return null;
 }

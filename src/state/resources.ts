@@ -34,16 +34,15 @@ export const setLumberTarget = lumberTargetStore.set;
 
 // Auto-start animation loops on first hook use
 let tickInterval: ReturnType<typeof setInterval> | null = null;
-let rafId = 0;
 
 function startLoops() {
   if (tickInterval) return;
   tickInterval = setInterval(tickResources, 1000);
   const loop = () => {
     animateCounters();
-    rafId = requestAnimationFrame(loop);
+    requestAnimationFrame(loop);
   };
-  rafId = requestAnimationFrame(loop);
+  requestAnimationFrame(loop);
 }
 
 // Hooks (subscribe in React components) — auto-start animation loops on first use

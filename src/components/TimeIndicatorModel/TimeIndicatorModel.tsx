@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { resolveAssetPath } from "../../utils/config";
 import { ModelRenderer, decodeBLP, getBLPImageData, parseMDX } from "war3-model";
 import { mat4, quat, vec3 } from "gl-matrix";
 import { RACE_PREFIXES } from "../../state/race";
@@ -88,7 +89,7 @@ function findTransparentSeed(alpha: Uint8ClampedArray, width: number, height: nu
 async function loadBLPMips(path: string): Promise<ImageData[]> {
   const cached = blpCache.get(path);
   if (cached) return cached;
-  const res = await fetch(path);
+  const res = await fetch(resolveAssetPath(path));
   if (!res.ok) throw new Error(`Failed to fetch texture ${path}`);
   const ab = await res.arrayBuffer();
   const blp = decodeBLP(ab);
@@ -164,7 +165,7 @@ async function loadWidgetMaskDataUrl(race: Race): Promise<string> {
 async function loadModel(race: Race): Promise<ModelType> {
   const cached = modelCache.get(race);
   if (cached) return cached;
-  const res = await fetch(getModelPath(race));
+  const res = await fetch(resolveAssetPath(getModelPath(race)));
   if (!res.ok) throw new Error(`Failed to fetch clock model for ${race}`);
   const ab = await res.arrayBuffer();
   const model = parseMDX(ab);
@@ -257,7 +258,11 @@ export default function TimeIndicatorModel({ race }: Props) {
       cancelAnimationFrame(s.rafId);
       observer.disconnect();
       if (s.modelRenderer) {
-        try { s.modelRenderer.destroy(); } catch {}
+        try {
+          s.modelRenderer.destroy();
+        } catch {
+          // Renderer may already be torn down with its GL context
+        }
         s.modelRenderer = null;
       }
     };
@@ -274,7 +279,11 @@ export default function TimeIndicatorModel({ race }: Props) {
       if (s.disposed || version !== s.initVersion) return;
 
       if (s.modelRenderer) {
-        try { s.modelRenderer.destroy(); } catch {}
+        try {
+          s.modelRenderer.destroy();
+        } catch {
+          // Renderer may already be torn down with its GL context
+        }
       }
       s.modelRenderer = new ModelRenderer(model);
       s.modelRenderer.initGL(s.gl!);

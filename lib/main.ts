@@ -52,6 +52,10 @@ export { default as BnetEditBox } from "../src/components/BnetEditBox/BnetEditBo
 
 // Components — 3D models
 export { default as HeroPortraitModel } from "../src/components/HeroPortraitModel/HeroPortraitModel";
+export type {
+  HeroPortraitModelProps,
+  PortraitStat,
+} from "../src/components/HeroPortraitModel/HeroPortraitModel";
 export { default as ItemModel } from "../src/components/ItemModel/ItemModel";
 export { default as WorkerUnitModel } from "../src/components/WorkerUnitModel/WorkerUnitModel";
 export { default as TimeIndicatorModel } from "../src/components/TimeIndicatorModel/TimeIndicatorModel";
@@ -63,10 +67,8 @@ export { default as ResourceCounter } from "../src/components/ResourceCounter/Re
 export { default as CursorOverlay } from "../src/components/CursorOverlay/CursorOverlay";
 
 // Components — command card
-export {
-  default as CommandCard,
-  createEmptySlots,
-} from "../src/components/CommandCard/CommandCard";
+export { default as CommandCard } from "../src/components/CommandCard/CommandCard";
+export { createEmptySlots } from "../src/components/CommandCard/slots";
 export type {
   CommandSlot,
   CommandSlotState,
@@ -78,6 +80,7 @@ export { default as StatBar } from "../src/components/StatBar/StatBar";
 export { default as LoadingBar } from "../src/components/LoadingBar/LoadingBar";
 export { default as MenuPanel } from "../src/components/MenuPanel/MenuPanel";
 export { default as Tooltip } from "../src/components/Tooltip/Tooltip";
+export { default as AnchoredTooltip } from "../src/components/Tooltip/AnchoredTooltip";
 
 // Components — gallery
 export { default as HeroGallery } from "../src/components/HeroGallery/HeroGallery";

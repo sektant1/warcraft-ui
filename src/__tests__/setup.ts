@@ -20,6 +20,12 @@ HTMLCanvasElement.prototype.getContext = (() => {
     beginPath: noop,
     rect: noop,
     clip: noop,
+    moveTo: noop,
+    lineTo: noop,
+    arc: noop,
+    closePath: noop,
+    stroke: noop,
+    createLinearGradient: () => ({ addColorStop: noop }),
     setTransform: noop,
     canvas: { width: 0, height: 0 },
     fillStyle: "",
@@ -29,7 +35,7 @@ HTMLCanvasElement.prototype.getContext = (() => {
     imageSmoothingEnabled: true,
   } as unknown as CanvasRenderingContext2D;
   return () => ctx;
-})();
+})() as unknown as typeof HTMLCanvasElement.prototype.getContext;
 
 // Mock fetch for BLP loading
 globalThis.fetch = (() =>

@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from "react";
 import { useBlpTextures, useCanvasRenderer } from "../../utils/blpLoader";
 import BlpIcon from "../BlpIcon/BlpIcon";
-import Tooltip from "../Tooltip/Tooltip";
+import AnchoredTooltip from "../Tooltip/AnchoredTooltip";
 import "./style.css";
 
 // ─── Resource icon (canvas-rendered BLP) ─────────────────────────────────────
@@ -104,7 +104,7 @@ function CellContent({ cell }: { cell: TableCellDef }) {
 // ─── Header cell with optional tooltip ───────────────────────────────────────
 
 function HeaderCell({ col }: { col: TableColumn }) {
-  const [hovered, setHovered] = useState(false);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
 
   return (
     <th
@@ -113,16 +113,14 @@ function HeaderCell({ col }: { col: TableColumn }) {
         width: col.width,
         textAlign: col.align ?? "left",
       }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={(e) => setAnchor(e.currentTarget)}
+      onMouseLeave={() => setAnchor(null)}
     >
       <span className="wc-table-th-label">{col.header}</span>
-      {hovered && col.headerTooltip && (
-        <div className="wc-table-tooltip-wrap">
-          <Tooltip icon={col.headerTooltip.icon}>
-            {col.headerTooltip.content}
-          </Tooltip>
-        </div>
+      {col.headerTooltip && (
+        <AnchoredTooltip anchor={anchor} icon={col.headerTooltip.icon}>
+          {col.headerTooltip.content}
+        </AnchoredTooltip>
       )}
     </th>
   );
@@ -137,20 +135,20 @@ function DataCell({
   cell: TableCellDef;
   align?: "left" | "center" | "right";
 }) {
-  const [hovered, setHovered] = useState(false);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
 
   return (
     <td
       className="wc-table-td"
       style={{ textAlign: align ?? "left" }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={(e) => setAnchor(e.currentTarget)}
+      onMouseLeave={() => setAnchor(null)}
     >
       <CellContent cell={cell} />
-      {hovered && cell.tooltip && (
-        <div className="wc-table-tooltip-wrap">
-          <Tooltip icon={cell.tooltip.icon}>{cell.tooltip.content}</Tooltip>
-        </div>
+      {cell.tooltip && (
+        <AnchoredTooltip anchor={anchor} icon={cell.tooltip.icon}>
+          {cell.tooltip.content}
+        </AnchoredTooltip>
       )}
     </td>
   );
@@ -169,7 +167,8 @@ function TableRow({
   rowNumber: number;
   showRowNumbers: boolean;
 }) {
-  const [hovered, setHovered] = useState(false);
+  const [anchor, setAnchor] = useState<HTMLElement | null>(null);
+  const hovered = anchor !== null;
 
   return (
     <tr
@@ -180,8 +179,8 @@ function TableRow({
       ]
         .filter(Boolean)
         .join(" ")}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={(e) => setAnchor(e.currentTarget)}
+      onMouseLeave={() => setAnchor(null)}
     >
       {showRowNumbers && (
         <td className="wc-table-td wc-table-td--num">{rowNumber}</td>
@@ -192,12 +191,10 @@ function TableRow({
           <DataCell key={col.key} cell={cell} align={col.align} />
         );
       })}
-      {hovered && row.tooltip && (
-        <td className="wc-table-row-tooltip-cell" aria-hidden="true">
-          <div className="wc-table-tooltip-wrap wc-table-tooltip-wrap--row">
-            <Tooltip icon={row.tooltip.icon}>{row.tooltip.content}</Tooltip>
-          </div>
-        </td>
+      {row.tooltip && (
+        <AnchoredTooltip anchor={anchor} icon={row.tooltip.icon} align="end">
+          {row.tooltip.content}
+        </AnchoredTooltip>
       )}
     </tr>
   );

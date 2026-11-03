@@ -1,3 +1,4 @@
+import { resolveAssetPath } from "../../utils/config";
 import { useCurrentRace, RACE_PREFIXES } from "../../state/race";
 import type { Race } from "../../utils/types";
 import "./style.css";
@@ -12,7 +13,7 @@ export default function BottomHud({ race: raceProp }: Props = {}) {
   const rp = RACE_PREFIXES[race];
 
   const tileSrc = (n: string) =>
-    `war3/Console/${race}/${rp.tile}UITile0${n}.png`;
+    resolveAssetPath(`console/${race}/${rp.tile}UITile0${n}.png`);
 
   return (
     <div className="wc-hud-bar">

@@ -6,6 +6,7 @@
 }
 
 .command-card-grid {
+  position: relative;
   display: grid;
   gap: 6px;
   padding: 0;
@@ -76,13 +77,14 @@
   filter: brightness(0.7);
 }
 
-.cmd-btn-tooltip {
+/* Tooltip sits above the whole card, right-aligned like the in-game HUD */
+.cmd-card-tooltip {
   position: absolute;
   bottom: calc(100% + 8px);
-  left: 50%;
-  transform: translateX(-50%);
+  right: 0;
   z-index: 100;
   width: max-content;
-  max-width: 280px;
+  min-width: 100%;
+  max-width: 320px;
   pointer-events: none;
 }

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { resolveAssetPath } from "../../utils/config";
 import {
   ModelRenderer,
   decodeBLP,
@@ -69,7 +70,7 @@ function getTexturePath(textureImage: string, race: Race): string | null {
 async function loadModel(path: string): Promise<ModelType> {
   const cached = modelCache.get(path);
   if (cached) return cached;
-  const res = await fetch(path);
+  const res = await fetch(resolveAssetPath(path));
   if (!res.ok) throw new Error(`Failed to load worker unit model: ${path}`);
   const ab = await res.arrayBuffer();
   const model = parseMDX(ab);
@@ -80,7 +81,7 @@ async function loadModel(path: string): Promise<ModelType> {
 async function loadBLPMips(path: string): Promise<ImageData[]> {
   const cached = blpCache.get(path);
   if (cached) return cached;
-  const res = await fetch(path);
+  const res = await fetch(resolveAssetPath(path));
   if (!res.ok) throw new Error(`Failed to load worker unit texture: ${path}`);
   const ab = await res.arrayBuffer();
   const blp = decodeBLP(ab);
@@ -220,6 +221,10 @@ export default function WorkerUnitModel(props: WorkerUnitModelProps) {
     cameraFov: 0.78,
     cameraNear: 8,
     cameraFar: 2400,
+    /** Loader bound to the live GL context; set by the setup effect. */
+    initForRace: null as ((race: Race) => Promise<void>) | null,
+    /** Race currently loaded/loading — avoids a duplicate load on mount. */
+    loadedRace: null as Race | null,
   });
 
   useEffect(() => {
@@ -310,8 +315,8 @@ export default function WorkerUnitModel(props: WorkerUnitModelProps) {
       vec3.set(s.cameraTarget, cx, cy, targetZ);
 
       // Camera distance: pull back enough to fit the bounding box in the FOV
-      // 1.4 padding factor ensures no part of the model is clipped
-      const dist = (bboxSize / (2 * Math.tan(fov / 2))) * 1.7 * tweak.dist;
+      // 1.2 padding keeps the full animation (incl. tool swings) in frame without leaving the model tiny
+      const dist = (bboxSize / (2 * Math.tan(fov / 2))) * 1.2 * tweak.dist;
 
       // Position: slightly to the right, straight back, same height as target
       vec3.set(
@@ -362,7 +367,7 @@ export default function WorkerUnitModel(props: WorkerUnitModelProps) {
       s.rafId = requestAnimationFrame(tick);
     };
 
-    const initForRace = async (race: Race, _side: WorkerSide) => {
+    const initForRace = async (race: Race) => {
       const version = ++s.initVersion;
       const cfg = WORKER_UNIT_CONFIG[race];
       const model = await loadModel(cfg.modelPath);
@@ -394,7 +399,7 @@ export default function WorkerUnitModel(props: WorkerUnitModelProps) {
       await Promise.all(texturePromises);
     };
 
-    (s as any).initForRace = initForRace;
+    s.initForRace = initForRace;
 
     s.gl = canvas.getContext("webgl2", {
       alpha: true,
@@ -417,7 +422,8 @@ export default function WorkerUnitModel(props: WorkerUnitModelProps) {
     s.resizeObserver = new ResizeObserver(() => resizeCanvas());
     s.resizeObserver.observe(canvas);
     startRenderLoop();
-    void initForRace(props.race, props.side).catch((err) => console.error(err));
+    s.loadedRace = props.race;
+    void initForRace(props.race).catch((err) => console.error(err));
 
     return () => {
       s.disposed = true;
@@ -425,25 +431,25 @@ export default function WorkerUnitModel(props: WorkerUnitModelProps) {
       cancelAnimationFrame(s.rafId);
       s.resizeObserver?.disconnect();
       destroyRenderer();
+      s.initForRace = null;
+      s.loadedRace = null;
     };
+    // GL setup runs once; race changes are handled by the effect below.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Swap the model when the race changes
   useEffect(() => {
     const s = stateRef.current;
-    if (!s.gl || s.disposed) return;
-    const initForRace = (s as any).initForRace as
-      | ((race: Race, side: WorkerSide) => Promise<void>)
-      | undefined;
-    if (initForRace)
-      void initForRace(props.race, props.side).catch((err) =>
-        console.error(err),
-      );
-  }, [props.race, props.side]);
+    if (!s.initForRace || s.disposed || s.loadedRace === props.race) return;
+    s.loadedRace = props.race;
+    void s.initForRace(props.race).catch((err) => console.error(err));
+  }, [props.race]);
 
   return (
     <canvas
       ref={canvasRef}
-      className="worker-unit"
+      className={`worker-unit worker-unit--${props.side}`}
       style={{
         position: "absolute",
         inset: "0",
