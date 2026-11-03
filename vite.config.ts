@@ -4,13 +4,24 @@ import dts from "vite-plugin-dts";
 import { resolve } from "node:path";
 
 export default defineConfig({
-  plugins: [react(), dts({ insertTypesEntry: true })],
+  plugins: [
+    react(),
+    dts({
+      tsconfigPath: "./tsconfig.app.json",
+      include: ["lib", "src"],
+      exclude: ["src/__tests__", "src/demo", "src/App.tsx", "src/main.tsx"],
+      insertTypesEntry: true,
+    }),
+  ],
   resolve: {
     alias: {
       "@sektant1/warcraft-ui/style.css": resolve(__dirname, "src/index.css"),
       "@sektant1/warcraft-ui": resolve(__dirname, "lib/main.ts"),
     },
   },
+  // Game assets in public/ are copyrighted and served by the consumer — never
+  // copy them into the published package.
+  publicDir: false,
   build: {
     lib: {
       entry: resolve(__dirname, "lib/main"),
