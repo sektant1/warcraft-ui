@@ -152,9 +152,9 @@ export interface PortraitStat {
 
 export interface HeroPortraitModelProps {
   race: Race;
-  /** Hit points shown in the frame's first slot (colour follows health %). */
+  /** Hit points bar + text in the frame's first slot (colour follows health %). */
   hp?: PortraitStat;
-  /** Mana shown in the frame's second slot. */
+  /** Mana bar + text in the frame's second slot. */
   mp?: PortraitStat;
 }
 
@@ -162,6 +162,72 @@ function formatStat({ current, max }: PortraitStat): string {
   const c = Math.max(0, Math.round(current));
   const m = Math.max(0, Math.round(max));
   return `${Math.min(c, m)} / ${m}`;
+}
+
+function statPercent({ current, max }: PortraitStat): number {
+  if (!(max > 0) || !Number.isFinite(current)) return 0;
+  return Math.max(0, Math.min(100, (current / max) * 100));
+}
+
+/**
+ * Transparent stat slots in each race's 130×160 frame art (measured from the
+ * PNGs): [left, right] columns and [top, bottom] rows of the HP and MP slots.
+ * Bars are drawn under the frame, so they're padded 1px into the border to
+ * avoid hairline gaps.
+ */
+const FRAME_W = 130;
+const FRAME_H = 160;
+const STAT_SLOTS: Record<Race, { x: [number, number]; hp: [number, number]; mp: [number, number] }> = {
+  Human: { x: [20, 117], hp: [124, 137], mp: [142, 155] },
+  Orc: { x: [23, 111], hp: [126, 137], mp: [144, 154] },
+  NightElf: { x: [23, 113], hp: [125, 138], mp: [143, 155] },
+  Undead: { x: [23, 112], hp: [125, 137], mp: [144, 155] },
+};
+
+function slotStyle(x: [number, number], y: [number, number]) {
+  const pad = 1;
+  const pct = (v: number, total: number) => `${(v / total) * 100}%`;
+  return {
+    left: pct(x[0] - pad, FRAME_W),
+    width: pct(x[1] - x[0] + 1 + pad * 2, FRAME_W),
+    top: pct(y[0] - pad, FRAME_H),
+    height: pct(y[1] - y[0] + 1 + pad * 2, FRAME_H),
+  };
+}
+
+function StatSlot({
+  kind,
+  stat,
+  race,
+}: {
+  kind: "hp" | "mp";
+  stat: PortraitStat;
+  race: Race;
+}) {
+  const slots = STAT_SLOTS[race];
+  const pct = statPercent(stat);
+  const text = formatStat(stat);
+  return (
+    <div
+      className={`hero-portrait__stat hero-portrait__stat--${kind}`}
+      style={slotStyle(slots.x, slots[kind])}
+      role="meter"
+      aria-label={kind === "hp" ? "Hit points" : "Mana"}
+      aria-valuemin={0}
+      aria-valuemax={Math.round(stat.max)}
+      aria-valuenow={Math.round(Math.min(stat.current, stat.max))}
+      aria-valuetext={text}
+    >
+      <div
+        className="hero-portrait__stat-fill"
+        style={{
+          width: `${pct}%`,
+          ...(kind === "hp" ? { backgroundColor: healthColor(pct) } : null),
+        }}
+      />
+      <span className="hero-portrait__stat-text">{text}</span>
+    </div>
+  );
 }
 
 export default function HeroPortraitModel(props: HeroPortraitModelProps) {
@@ -409,28 +475,9 @@ export default function HeroPortraitModel(props: HeroPortraitModelProps) {
       >
         <canvas ref={canvasRef} className="hero-portrait__canvas" />
       </div>
+      {props.hp && <StatSlot kind="hp" stat={props.hp} race={props.race} />}
+      {props.mp && <StatSlot kind="mp" stat={props.mp} race={props.race} />}
       <img src={frameSrc} alt="" className="hero-portrait__frame" />
-      {props.hp && (
-        <div
-          className="hero-portrait__stat hero-portrait__stat--hp"
-          style={{
-            color: healthColor(
-              props.hp.max > 0 ? (props.hp.current / props.hp.max) * 100 : 0,
-            ),
-          }}
-          aria-label={`Hit points ${formatStat(props.hp)}`}
-        >
-          {formatStat(props.hp)}
-        </div>
-      )}
-      {props.mp && (
-        <div
-          className="hero-portrait__stat hero-portrait__stat--mp"
-          aria-label={`Mana ${formatStat(props.mp)}`}
-        >
-          {formatStat(props.mp)}
-        </div>
-      )}
     </div>
   );
 }

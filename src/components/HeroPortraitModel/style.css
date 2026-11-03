@@ -7,38 +7,63 @@
 }
 
 /*
- * The frame art (130×160) has two stat slots under the portrait window:
- * slot 1 ≈ y 124–137, slot 2 ≈ y 143–155. Positions are in % of the frame
- * so they track any rendered size.
+ * HP / MP bars in the frame's two stat slots. Each slot is positioned per race
+ * (inline style from STAT_SLOTS) and sits *under* the frame art, so the gold
+ * border overlaps the bar edges like in-game.
  */
 .hero-portrait__stat {
   position: absolute;
-  left: 18%;
-  right: 18%;
-  height: 8.5%;
-  z-index: 3;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family:
-    "Friz Quadrata", "Palatino Linotype", "Book Antiqua", Palatino, serif;
-  font-size: clamp(9px, 7cqw, 22px);
-  line-height: 1;
-  white-space: nowrap;
-  text-shadow:
-    1px 1px 0 #000,
-    0 0 3px #000;
-  font-variant-numeric: tabular-nums;
+  z-index: 1;
+  overflow: hidden;
+  background: linear-gradient(180deg, #020306 0%, #0a0c16 55%, #020306 100%);
   pointer-events: none;
 }
 
-.hero-portrait__stat--hp {
-  top: 77.2%;
+.hero-portrait__stat-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  /* Rounded-glass shading over the base colour (set inline for HP) */
+  background-image: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.45) 0%,
+    rgba(255, 255, 255, 0.12) 35%,
+    rgba(0, 0, 0, 0) 55%,
+    rgba(0, 0, 0, 0.45) 100%
+  );
+  box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.5);
+  transition:
+    width 120ms linear,
+    background-color 200ms linear;
 }
 
-.hero-portrait__stat--mp {
-  top: 89%;
-  color: #c3dbff;
+.hero-portrait__stat--mp .hero-portrait__stat-fill {
+  background-color: #3654e0;
+}
+
+.hero-portrait__stat-text {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family:
+    "Friz Quadrata", "Palatino Linotype", "Book Antiqua", Palatino, serif;
+  font-size: clamp(9px, 6.5cqw, 20px);
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  text-shadow:
+    1px 1px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait__stat-fill {
+    transition: none;
+  }
 }
 
 .hero-portrait__window {
